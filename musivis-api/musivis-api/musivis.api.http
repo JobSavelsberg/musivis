@@ -1,0 +1,6 @@
+@musivis_api_HostAddress = http://localhost:5113
+
+GET {{musivis_api_HostAddress}}/test/
+Accept: application/json
+
+###
