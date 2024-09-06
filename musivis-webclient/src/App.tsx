@@ -6,8 +6,8 @@ function App() {
 
   useEffect(() => {
     fetch('https://musivis-api.fly.dev/status')
-      .then(response => response.json())
-      .then(responseJson => setStatus(responseJson))
+      .then(response => response.text())
+      .then(responseText => setStatus(responseText))
       .catch(error => console.error('Error fetching data:', error));
   }, []);
 
