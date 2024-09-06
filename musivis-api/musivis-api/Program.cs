@@ -25,6 +25,11 @@ namespace Musivis.API
 
             app.UseHttpsRedirection();
 
+            app.UseCors(builder =>
+            {
+                builder.WithOrigins("https://musivis.vercel.app/").AllowAnyMethod().AllowAnyHeader();
+            });
+
             app.UseAuthorization();
 
 
