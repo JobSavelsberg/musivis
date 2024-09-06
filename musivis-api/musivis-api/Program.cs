@@ -5,14 +5,22 @@ namespace Musivis.API
     {
         public static void Main(string[] args)
         {
+
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(policy => policy.WithOrigins("https://musivis.vercel.app"));
+            });
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+
 
             var app = builder.Build();
 
@@ -25,10 +33,7 @@ namespace Musivis.API
 
             app.UseHttpsRedirection();
 
-            app.UseCors(builder =>
-            {
-                builder.WithOrigins("https://musivis.vercel.app/").AllowAnyMethod().AllowAnyHeader();
-            });
+            app.UseCors();
 
             app.UseAuthorization();
 
