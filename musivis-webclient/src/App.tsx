@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import './App.css'
+import { ThemeProvider } from "@/components/theme-provider"
+import { ModeToggle } from './components/ui/mode-toggle';
 
 function App() {
   const [status, setStatus] = useState<string | null>(null);
@@ -12,14 +14,17 @@ function App() {
   }, []);
 
   return (
-    <>
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <h1 className="text-3xl font-bold underline">
         Musivis
       </h1>
       <p className="text-xl">
         {status ? status : 'Loading status...'}
       </p>
-    </>
+      <div className='p-2'>
+        <ModeToggle></ModeToggle>
+      </div>
+    </ThemeProvider>
   )
 }
 
