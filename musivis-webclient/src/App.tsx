@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import './App.css'
 import { ThemeProvider } from "@/components/theme-provider"
 import { ModeToggle } from './components/ui/mode-toggle';
+import { SpotifyLoginForm } from './components/ui/spotify-login-form';
 
 function App() {
   const [status, setStatus] = useState<string | null>(null);
@@ -24,6 +25,7 @@ function App() {
       <div className='p-2'>
         <ModeToggle></ModeToggle>
       </div>
+      <SpotifyLoginForm></SpotifyLoginForm>
     </ThemeProvider>
   )
 }
