@@ -14,7 +14,7 @@ export function SpotifyLoginForm() {
       <CardHeader>
         <CardTitle className="text-2xl">Login</CardTitle>
         <CardDescription>
-          Enter your email below to login to your account
+          Use your Spotify account to visualize and play your music
         </CardDescription>
       </CardHeader>
       <CardContent>
