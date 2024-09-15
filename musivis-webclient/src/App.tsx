@@ -1,31 +1,17 @@
-import { useState, useEffect } from 'react';
 import './App.css'
 import { ThemeProvider } from "@/components/theme-provider"
-import { ModeToggle } from './components/ui/mode-toggle';
-import { SpotifyLoginForm } from './components/ui/spotify-login-form';
+import { Route, Routes } from 'react-router-dom';
+import Home from './routes/Home';
+import Callback from './routes/Callback';
 
 function App() {
-  const [status, setStatus] = useState<string | null>(null);
-
-  useEffect(() => {
-    fetch('https://musivis-api.fly.dev/status')
-      .then(response => response.text())
-      .then(responseText => setStatus(responseText))
-      .catch(error => console.error('Error fetching data:', error));
-  }, []);
-
+ 
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <h1 className="text-3xl font-bold underline">
-        Musivis
-      </h1>
-      <p className="text-xl">
-        {status ? status : 'Loading status...'}
-      </p>
-      <div className='p-2'>
-        <ModeToggle></ModeToggle>
-      </div>
-      <SpotifyLoginForm></SpotifyLoginForm>
+      <Routes>
+        <Route path="/" element={<Home/>} />
+        <Route path="/callback" element={<Callback />} />
+      </Routes>
     </ThemeProvider>
   )
 }
