@@ -3,8 +3,8 @@ import { PKCY } from "./PKCY";
 // PKCY authentication with spotify
 export class SpotifyAuthorization{
     // Import from .env file
-    private static readonly clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID; 
-    private static readonly redirectUrl = import.meta.env.VITE_SPOTIFY_REDIRECT_URL;
+    private static readonly clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID as string; 
+    private static readonly redirectUrl = import.meta.env.VITE_SPOTIFY_REDIRECT_URL as string;
     
     private static readonly authorizationEndpoint = "https://accounts.spotify.com/authorize";
     private static readonly tokenEndpoint = "https://accounts.spotify.com/api/token";
