@@ -1,10 +1,10 @@
 import { ThemeProvider } from "@/components/theme-provider"
 import { Navigate, Route, Routes } from 'react-router-dom';
-import Home from './routes/Home';
-import Callback from './routes/Callback';
+import Home from './routes/home';
+import Callback from './routes/callback';
 import { ModeToggle } from './components/ui/mode-toggle';
 import { useEffect, useState } from "react";
-import Login from "./routes/Login";
+import Login from "./routes/login";
 import { SpotifyAuthorization } from "./services/spotifyAuthorization";
 
 function App() {

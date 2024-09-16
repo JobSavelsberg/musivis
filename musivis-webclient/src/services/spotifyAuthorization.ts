@@ -1,3 +1,4 @@
+// Copyright 2024 Sorama B.V.
 import { PKCY } from "./PKCY";
 
 // PKCY authentication with spotify
@@ -33,7 +34,7 @@ export class SpotifyAuthorization{
             code_challenge: codeChallenge,
             redirect_uri: SpotifyAuthorization.redirectUrl,
         }
-          
+
         const authUrl = new URL(SpotifyAuthorization.authorizationEndpoint);
         authUrl.search = new URLSearchParams(params).toString();
         window.location.href = authUrl.toString();
