@@ -1,23 +1,22 @@
 import { SpotifyAuthorization } from "@/services/spotifyAuthorization";
 import { useEffect } from "react";
 
-function Callback(){
+function Callback() {
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
-        const code = urlParams.get('code');
-        if(!code){
-            throw new Error('Code not found');
+        const code = urlParams.get("code");
+        if (!code) {
+            throw new Error("Code not found");
         }
 
-        SpotifyAuthorization.exchangeCodeForToken(code);
+        try {
+            SpotifyAuthorization.exchangeCodeForToken(code);
+        } catch {
+            window.location.href = "/login";
+        }
     }, []);
- 
 
-    return (
-        <div>
-            Loading...
-        </div>
-    )
+    return <div>Logging in...</div>;
 }
 
 export default Callback;

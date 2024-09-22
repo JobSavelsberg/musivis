@@ -4,37 +4,39 @@ export type SpotifyUser = {
     email: string;
     external_urls: {
         spotify: string;
-    }
+    };
     followers: {
         href: string;
         total: number;
-    }
+    };
     href: string;
     id: string;
     images: {
         height: number;
         url: string;
         width: number;
-    }[]
+    }[];
     type: string;
     uri: string;
-}
+};
 
-
-export class Spotify{
-
-
-    
-    public static async getMe(): Promise<SpotifyUser>{
-        const token = localStorage.getItem('access_token');
-        if(!token){
-            throw new Error('No token found');
+export class Spotify {
+    public static async getMe(): Promise<SpotifyUser> {
+        const token = localStorage.getItem("access_token");
+        if (!token) {
+            throw new Error("No token found");
         }
-        const response = await fetch('https://api.spotify.com/v1/me', {
+        const response = await fetch("https://api.spotify.com/v1/me", {
             headers: {
-                'Authorization': `Bearer ${token}`
-            }
+                Authorization: `Bearer ${token}`,
+            },
         });
+
+        // If forbidden, redirect to login
+        if (response.status === 401) {
+            window.location.href = "/login";
+        }
+
         return await response.json();
     }
 }
