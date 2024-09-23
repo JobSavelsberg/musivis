@@ -7,7 +7,7 @@ export default function TrackBrowser({ tracks }: { tracks: SpotifyTrack[] }) {
         <ScrollArea>
             <div className="flex space-x-4 overflow-x-auto py-4 px-2">
                 {tracks.map((track) => (
-                    <TrackCard track={track} className="w-1/12"/>
+                    <TrackCard key={track.id} track={track} className="w-1/12"/>
                 ))}
             </div>
             <ScrollBar orientation="horizontal" />
