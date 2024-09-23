@@ -5,7 +5,7 @@ import Callback from './routes/callback';
 import { ModeToggle } from './components/ui/mode-toggle';
 import { useEffect, useState } from "react";
 import Login from "./routes/login";
-import { SpotifyAuthorization } from "./services/spotifyAuthorization";
+import { SpotifyAuthorization } from "./services/spotify/spotifyAuthorization";
 
 function App() {
   const [status, setStatus] = useState<string | null>(null);

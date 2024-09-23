@@ -1,4 +1,4 @@
-import { SpotifyAuthorization } from "@/services/spotifyAuthorization";
+import { SpotifyAuthorization } from "@/services/spotify/spotifyAuthorization";
 import { useEffect } from "react";
 
 function Callback() {

@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { SpotifyAuthorization } from "@/services/spotifyAuthorization"
+import { SpotifyAuthorization } from "@/services/spotify/spotifyAuthorization"
 
 export function SpotifyLoginForm() {
   return (
