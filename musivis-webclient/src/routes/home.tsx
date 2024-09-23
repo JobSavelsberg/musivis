@@ -5,11 +5,9 @@ import { useEffect, useState } from "react";
 
 
 function Home() {
-    const [name, setName] = useState('');
     const [tracks, setTracks] = useState<SpotifyTrack[]>([]);
 
     useEffect(() => {
-        Spotify.getMe().then(user => setName(user.display_name));
         Spotify.getTopTracks().then(tracks => setTracks(tracks.items));
     }, []);
 
