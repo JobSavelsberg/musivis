@@ -1,3 +1,4 @@
+import TrackBrowser from "@/components/ui/track-browser";
 import { Spotify } from "@/services/spotify/spotify";
 import { SpotifyTrack } from "@/services/spotify/spotifyDTOs";
 import { useEffect, useState } from "react";
@@ -14,18 +15,7 @@ function Home() {
 
     return(
         <>
-            <h1 className="text-2xl font-bold text-center">
-                Hi, {name}!
-            </h1>
-            {tracks && tracks.length > 0 && (
-                <ul>
-                    {tracks.map(track => (
-                        <li key={track.id}>
-                            {track.name}
-                        </li>
-                    ))}
-                </ul>
-            )}
+            <TrackBrowser tracks={tracks}></TrackBrowser>
         </>
     )
 }
