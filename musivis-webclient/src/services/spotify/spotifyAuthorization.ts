@@ -76,5 +76,12 @@ export class SpotifyAuthorization{
         // Refresh
         window.location.href = '/';    
     }
+
+    public static logOut(): void{
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('expiry');
+        localStorage.removeItem('refresh_token');
+        localStorage.removeItem('code_verifier');
+    }
 }
 

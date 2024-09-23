@@ -6,28 +6,52 @@ import { ModeToggle } from './components/ui/mode-toggle';
 import { useEffect, useState } from "react";
 import Login from "./routes/login";
 import { SpotifyAuthorization } from "./services/spotify/spotifyAuthorization";
+import { Avatar, AvatarFallback, AvatarImage } from "./components/ui/avatar";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "./components/ui/dropdown-menu";
+import Profile from "./components/ui/profile";
+import { Spotify } from "./services/spotify/spotify";
+
+export type User = {
+  display_name: string;
+  email: string;
+  id: string;
+  images: {
+    height: number | null;
+    url: string;
+    width: number | null;
+  }[];
+}
 
 function App() {
-  const [status, setStatus] = useState<string | null>(null);
 
   useEffect(() => {
     const backendUrl = import.meta.env.VITE_MUSIVIS_BACKEND_URL as string;
     fetch(`${backendUrl}/status`)
       .then(response => response.text())
-      .then(responseText => setStatus(responseText))
+      .then(responseText =>console.log('Backend status:', responseText))
       .catch(error => console.error('Error fetching data:', error));
   }, []);
+
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    if (SpotifyAuthorization.isLoggedIn()) {
+      Spotify.getMe().then(setUser);
+    }
+  }, []);
+
+  const handleLogOut = () => {
+    SpotifyAuthorization.logOut();
+    setUser(null);
+  }
   
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <header className="flex gap-4 p-4">
-        <p className="font-bold">
+        <h1 className="font-bold text-2xl grow">
           Musivis
-        </p>
-        <p className="grow">
-          {status ? status : 'Loading status...'}
-        </p>
-        <ModeToggle></ModeToggle>
+        </h1>
+        <Profile user={user} onLogOut={handleLogOut}></Profile>
       </header>
       <Routes>
         <Route path="/" element={SpotifyAuthorization.isLoggedIn() ? <Home/> : <Navigate to="/login" />} />
