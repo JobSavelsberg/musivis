@@ -16,7 +16,7 @@ export default function TrackCard({ track, className }: { track: SpotifyTrack; c
           className="absolute inset-0 h-full w-full object-cover"
         />
       </div>
-      <CardContent className="p-4">
+      <CardContent className="p-2">
         <h3 className="text-center text-sm font-semibold truncate">{title}</h3>
         <p className="text-center text-xs truncate text-muted-foreground">
           {artists}
