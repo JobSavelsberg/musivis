@@ -5,9 +5,11 @@ import { cn } from "@/lib/utils";
 export default function TrackCard({
     track,
     className,
+    onClick,
 }: {
     track: SpotifyTrack;
     className?: string;
+    onClick?: () => void;
 }) {
     const coverUrl = track.album.images[0].url;
     const title = track.name;
@@ -19,9 +21,7 @@ export default function TrackCard({
                 "overflow-hidden cursor-pointer hover:bg-accent transition-colors",
                 className,
             )}
-            onClick={() => {
-                window.open(track.external_urls.spotify, "_blank");
-            }}
+            onClick={onClick}
         >
             <div className="relative pb-[100%]">
                 <img
