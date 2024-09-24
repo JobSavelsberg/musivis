@@ -3,7 +3,7 @@ import {
     SpotifyTimeRanges,
     SpotifyTrack,
     SpotifyUser,
-} from "./spotifyDTOs";
+} from "./spotify/spotifyDTOs";
 
 export class Spotify {
     private static async get<T>(uri: string): Promise<T> {
