@@ -13,9 +13,11 @@ export class SpotifyAuthorization {
     private static readonly tokenEndpoint =
         "https://accounts.spotify.com/api/token";
     private static readonly scopes = [
-        "user-read-private",
-        "user-read-email",
-        "user-top-read",
+        "user-read-private", // Get user info
+        "user-read-email", // Get user email (might not necessarily need this)
+        "user-top-read", // Get top tracks
+        "app-remote-control", // Control playback
+        "streaming" // Play music
     ];
 
     public static isLoggedIn(): boolean {

@@ -46,8 +46,9 @@ export default function SpotifyPlayer({ track }: { track?: SpotifyTrack }) {
 
     useEffect(() => {
         // Check if the Spotify SDK is already loaded
+        const loadedScript = document.querySelector("script[src='https://sdk.scdn.co/spotify-player.js']");
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        if ((window as any).Spotify) {
+        if ((window as any).Spotify || loadedScript) {
             return;
         }
         const script = document.createElement("script");
@@ -57,14 +58,13 @@ export default function SpotifyPlayer({ track }: { track?: SpotifyTrack }) {
         document.body.appendChild(script);
 
         window.onSpotifyWebPlaybackSDKReady = () => {
-            if (player !== undefined) {
-                return;
-            }
-
             const newPlayer = new window.Spotify.Player({
-                name: "Web Playback SDK",
+                name: "Musivis",
                 getOAuthToken: (cb) => {
-                    cb(localStorage.getItem("access_token") || "");
+                    console.log("Getting token");
+                    const token = localStorage.getItem("access_token");
+                    console.log("Token", token);
+                    cb(token || "");
                 },
                 volume: 0.5,
             });
@@ -84,6 +84,8 @@ export default function SpotifyPlayer({ track }: { track?: SpotifyTrack }) {
                     return;
                 }
 
+                console.log("Player state changed", state);
+
                 setTrack(state.track_window.current_track);
                 setPaused(state.paused);
 
@@ -96,7 +98,12 @@ export default function SpotifyPlayer({ track }: { track?: SpotifyTrack }) {
                 });
             });
 
+
+            console.log("Connecting player");
+
             newPlayer.connect();
+
+            console.log("Player connected");
         };
     }, []);
 

@@ -1,4 +1,5 @@
 // import SpotifyPlayer from "@/components/ui/spotify-player";
+import SpotifyPlayer from "@/components/ui/spotify-player";
 import TrackBrowser from "@/components/ui/track-browser";
 import { Spotify } from "@/services/spotify/spotify";
 import { SpotifyTrack } from "@/services/spotify/spotifyDTOs";
@@ -25,7 +26,7 @@ function Home() {
                     ? `Selected track: ${selectedTrack.name}`
                     : "No track selected"}
             </h1>
-            {/* <SpotifyPlayer track={selectedTrack}></SpotifyPlayer> */}
+            <SpotifyPlayer track={selectedTrack}></SpotifyPlayer>
         </>
     );
 }
