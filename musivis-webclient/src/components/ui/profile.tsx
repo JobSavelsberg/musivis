@@ -9,7 +9,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Moon, Sun, LogOut } from "lucide-react";
-import { useTheme } from "../theme-provider";
+import { useTheme } from "../../contexts/themeContext";
 import { User } from "@/app";
 
 export type ProfileProps = {
@@ -22,7 +22,6 @@ export default function Profile({ user, onLogOut }: ProfileProps) {
 
     const toggleTheme = () => {
         setTheme(theme === "light" ? "dark" : "light");
-        // Here you would typically update the theme in your app's context or localStorage
     };
 
     if (!user) {

@@ -1,4 +1,3 @@
-import { ThemeProvider } from "@/components/theme-provider";
 import { Navigate, Route, Routes } from "react-router-dom";
 import Home from "./routes/home";
 import Callback from "./routes/callback";
@@ -7,6 +6,7 @@ import Login from "./routes/login";
 import { SpotifyAuthorization } from "./services/spotify/spotifyAuthorization";
 import Profile from "./components/ui/profile";
 import { Spotify } from "./services/spotify/spotify";
+import { ThemeProvider } from "./contexts/themeContext";
 
 export type User = {
     display_name: string;
