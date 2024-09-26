@@ -1,6 +1,6 @@
 import { AuthContext } from "@/components/auth-provider";
 import { SpotifyAuthorization } from "@/services/spotify/spotifyAuthorization";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 function Callback() {
