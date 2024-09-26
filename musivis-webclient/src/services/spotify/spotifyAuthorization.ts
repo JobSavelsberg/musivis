@@ -82,9 +82,6 @@ export class SpotifyAuthorization {
 
         localStorage.setItem("expiry", expiry.toISOString());
         localStorage.setItem("refresh_token", response.refresh_token);
-
-        // Refresh
-        window.location.href = "/";
     }
 
     public static logOut(): void {

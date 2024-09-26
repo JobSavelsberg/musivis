@@ -90,7 +90,7 @@ export type SpotifyTrack = {
     href: string;
     id: string;
     is_playable: boolean;
-    linked_from: any;
+    linked_from: unknown;
     restrictions: {
         reason: string;
     };
