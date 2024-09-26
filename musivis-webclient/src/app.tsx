@@ -20,15 +20,15 @@ export type User = {
 function App() {
     const { logout, user } = useContext(AuthContext);
 
-    // useEffect(() => {
-    //     const backendUrl = import.meta.env.VITE_MUSIVIS_BACKEND_URL as string;
-    //     fetch(`${backendUrl}/status`)
-    //         .then((response) => response.text())
-    //         .then((responseText) =>
-    //             console.log("Backend status:", responseText),
-    //         )
-    //         .catch((error) => console.error("Error fetching data:", error));
-    // }, []);
+    useEffect(() => {
+        const backendUrl = import.meta.env.VITE_MUSIVIS_BACKEND_URL as string;
+        fetch(`${backendUrl}/status`)
+            .then((response) => response.text())
+            .then((responseText) =>
+                console.log("Backend status:", responseText),
+            )
+            .catch((error) => console.warn("Error fetching data:", error));
+    }, []);
 
     return (
         <>

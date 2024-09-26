@@ -14,10 +14,8 @@ function Callback() {
             const isLoggingIn = localStorage.getItem("isLoggingIn") === "true";
             // Ensure that the login process is only started once
             if (isLoggingIn) {
-                console.log(`Already logging in, returning`);
                 return;
             } else {
-                console.log(`Not logging in yet, setting isLoggingIn to true`);
                 localStorage.setItem("isLoggingIn", "true");
             }
 
@@ -27,18 +25,12 @@ function Callback() {
                 if (!code) {
                     throw new Error("Code not found");
                 }
-
-                console.log(`Code found, exchanging code for token`);
                 await SpotifyAuthorization.exchangeCodeForToken(code);
-                console.log(`Code exchanged for token, logging in`);
                 login();
-                console.log(`Logged in, navigating to home`);
                 navigate("/");
             } catch {
-                console.error(`Error in callback, navigating to login`);
                 navigate("/login");
             } finally {
-                console.log(`Setting isLoggingIn to false`);
                 localStorage.setItem("isLoggingIn", "false");
             }
         };
