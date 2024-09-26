@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import Home from "./routes/home";
 import Callback from "./routes/callback";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import Login from "./routes/login";
 import Profile from "./components/ui/profile";
 import { AuthContext } from "./components/auth-provider";

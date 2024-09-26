@@ -11,7 +11,7 @@ export default function TrackBrowser({
 }) {
     return (
         <ScrollArea>
-            <div className="flex space-x-4 overflow-x-auto py-4 px-2">
+            <div className="flex space-x-4 overflow-x-auto pb-4">
                 {tracks.map((track) => (
                     <TrackCard
                         key={track.id}

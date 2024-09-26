@@ -102,3 +102,47 @@ export type SpotifyTrack = {
     uri: string;
     is_local: boolean;
 };
+
+export type SpotifyPlayerPlay = {
+    context_uri?: string;
+    uris?: string[];
+    offset?: { position?: number; uri?: string };
+    position_ms?: number;
+};
+
+export type SpotifyPlayerState = {
+    timestamp: number;
+    context: {
+        uri: string;
+        metadata: unknown;
+    };
+    duration: number;
+    paused: boolean;
+    shuffle: boolean;
+    shuffle_mode: number;
+    position: number;
+    loading: boolean;
+    repeat_mode: number;
+    track_window: {
+        current_track: SpotifyTrack;
+        next_tracks: SpotifyTrack[];
+        previous_tracks: SpotifyTrack[];
+    };
+    playback_id: string;
+    playback_quality: string;
+    playback_features: {
+        hifi_status: string;
+        playback_speed: {
+            current: number;
+            selected: number;
+            restricted: boolean;
+        };
+        signal_ids: [];
+        modes: unknown;
+    };
+    playback_speed: number;
+};
+
+export type SpotifyDeviceId = {
+    device_id: string;
+};

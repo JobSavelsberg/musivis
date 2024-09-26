@@ -16,18 +16,16 @@ function Home() {
     }, []);
 
     return (
-        <>
+        <div className="flex flex-col p-10 gap-10">
             <TrackBrowser
                 tracks={tracks}
                 onTrackClicked={setSelectedTrack}
             ></TrackBrowser>
-            <h1>
-                {selectedTrack
-                    ? `Selected track: ${selectedTrack.name}`
-                    : "No track selected"}
-            </h1>
-            <SpotifyPlayer track={selectedTrack}></SpotifyPlayer>
-        </>
+            <SpotifyPlayer
+                track={selectedTrack}
+                setTrack={setSelectedTrack}
+            ></SpotifyPlayer>
+        </div>
     );
 }
 

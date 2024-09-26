@@ -1,6 +1,6 @@
 import { User } from "@/app";
+import { Spotify } from "@/services/spotify/spotify";
 import { SpotifyAuthorization } from "@/services/spotify/spotifyAuthorization";
-import { Spotify } from "@/services/spotifyRepository";
 import { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 

@@ -1,32 +1,53 @@
 import {
     SpotifyPagedResult,
+    SpotifyPlayerPlay,
     SpotifyTimeRanges,
     SpotifyTrack,
     SpotifyUser,
 } from "./spotifyDTOs";
 
 export class Spotify {
-    private static async get<T>(uri: string): Promise<T> {
+    private static readonly baseUrl = "https://api.spotify.com/v1/";
+
+    private static headers(): HeadersInit {
         const token = localStorage.getItem("access_token");
         if (!token) {
             throw new Error("No token found");
         }
-        const response = await fetch(`https://api.spotify.com/v1/${uri}`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
+        return {
+            Authorization: `Bearer ${token}`,
+        };
+    }
 
-        // If forbidden, redirect to login
+    private static async parseResponse<T>(response: Response): Promise<T> {
         if (response.status === 401) {
             window.location.href = "/login";
         }
+        if (response.ok) {
+            return response.json();
+        }
 
-        return await response.json();
+        return {} as T;
+    }
+
+    private static async put<T, U>(endpoint: string, body: T): Promise<U> {
+        const response = await fetch(`${this.baseUrl}${endpoint}`, {
+            body: JSON.stringify(body),
+            method: "PUT",
+            headers: this.headers(),
+        });
+        return this.parseResponse(response);
+    }
+
+    private static async get<T>(endpoint: string): Promise<T> {
+        const response = await fetch(`${this.baseUrl}${endpoint}`, {
+            headers: this.headers(),
+        });
+        return this.parseResponse(response);
     }
 
     public static async getMe(): Promise<SpotifyUser> {
-        return await this.get("me");
+        return this.get("me");
     }
 
     public static async getTopTracks(
@@ -45,6 +66,30 @@ export class Spotify {
         // append the parameters to the uri
         const uriWithParams = `${uri}?${params.toString()}`;
 
-        return await this.get(uriWithParams);
+        return this.get(uriWithParams);
     }
+
+    //#region Player
+    public static async transferPlaybackToDevice(
+        deviceId: string,
+    ): Promise<void> {
+        return this.put("me/player", { device_ids: [deviceId] });
+    }
+
+    public static async play(
+        track?: SpotifyTrack,
+        position?: number,
+    ): Promise<void> {
+        const body: SpotifyPlayerPlay = {};
+        if (track) {
+            body.uris = [track.uri];
+        }
+        if (position !== undefined) {
+            body.position_ms = position;
+        }
+
+        await this.put("me/player/play", body);
+    }
+
+    //#endregion
 }
