@@ -21,10 +21,7 @@ function Home() {
                 tracks={tracks}
                 onTrackClicked={setSelectedTrack}
             ></TrackBrowser>
-            <SpotifyPlayer
-                track={selectedTrack}
-                setTrack={setSelectedTrack}
-            ></SpotifyPlayer>
+            <SpotifyPlayer track={selectedTrack} progress={0}></SpotifyPlayer>
         </div>
     );
 }

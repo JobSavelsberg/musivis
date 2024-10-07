@@ -1,6 +1,6 @@
 import { SpotifyTrack } from "@/services/spotify/spotifyDTOs";
 import { Card, CardContent } from "./card";
-import { cn } from "@/lib/utils";
+import { cn } from "@/libs/utils";
 
 export default function TrackCard({
     track,
