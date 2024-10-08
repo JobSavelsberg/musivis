@@ -92,15 +92,29 @@ export class SpotifyPlayerService {
         this.player.addListener("not_ready", this.notReadyListener);
 
         this.stateChangedListener = (state) => {
-            console.log("State changed", state);
+            const isSpotifyPlaying = !state.paused;
+            // only update if necessary
+            if (
+                useSpotifyPlayerStore.getState().isPlaying !== isSpotifyPlaying
+            ) {
+                useSpotifyPlayerStore.setState({
+                    isPlaying: !state.paused,
+                });
+            }
 
-            useSpotifyPlayerStore.setState({
-                isPlaying: !state.paused,
-            });
-            useSpotifyPlayerStore.setState({
-                currentTrack: state.track_window.current_track as PlayableTrack,
-            });
+            const spotifyTrackPlaying = state.track_window
+                .current_track as PlayableTrack;
+            if (
+                useSpotifyPlayerStore.getState().currentTrack?.uri !==
+                spotifyTrackPlaying.uri
+            ) {
+                useSpotifyPlayerStore.setState({
+                    currentTrack: state.track_window
+                        .current_track as PlayableTrack,
+                });
+            }
         };
+
         this.player.addListener(
             "player_state_changed",
             this.stateChangedListener,

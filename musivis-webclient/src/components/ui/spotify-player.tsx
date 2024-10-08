@@ -19,8 +19,6 @@ export default function SpotifyPlayer({
         boolean | null
     >(null);
 
-    console.log("rerender with trakc", track);
-
     const showPlaying =
         requestedPlayingState !== null ? requestedPlayingState : isPlaying;
 
