@@ -13,8 +13,14 @@ export default function SpotifyPlayer({
     track: SpotifyTrack | undefined;
     progress: number;
 }) {
-    const [is_paused, setIsPaused] = useState(true);
-    const { isReady } = useSpotifyPlayerStore();
+    const { isReady, isPlaying } = useSpotifyPlayerStore();
+    // Used to make the play/pause button more responsive
+    const [requestedPlayingState, setRequestedPlayingState] = useState<
+        boolean | null
+    >(null);
+
+    const showPlaying =
+        requestedPlayingState !== null ? requestedPlayingState : isPlaying;
 
     useEffect(() => {
         if (!SpotifyPlayerService.isScriptAdded()) {
@@ -22,21 +28,25 @@ export default function SpotifyPlayer({
         }
     }, []);
 
-    function handlePlayPause() {
-        setIsPaused((prev) => {
-            if (prev) {
-                // Spotify.togglePlay();
-            } else {
-                // Spotify.togglePlay();
-            }
-            return !prev;
-        });
-    }
-
     function handleSeek(value: number[]) {
         console.log(value);
         // Spotify.seek(value);
     }
+
+    function handlePlayPause() {
+        if (showPlaying) {
+            setRequestedPlayingState(false);
+            SpotifyPlayerService.pause().then(() => {
+                setRequestedPlayingState(null);
+            });
+        } else {
+            setRequestedPlayingState(true);
+            SpotifyPlayerService.play().then(() => {
+                setRequestedPlayingState(null);
+            });
+        }
+    }
+
     if (!isReady) {
         return <div>Loading...</div>;
     } else {
@@ -69,12 +79,12 @@ export default function SpotifyPlayer({
                     <span>{formatTime(track?.duration_ms || 0)}</span>
                 </div>
                 <Button onClick={handlePlayPause}>
-                    {is_paused ? (
-                        <Play className="mr-2" />
-                    ) : (
+                    {showPlaying ? (
                         <Pause className="mr-2" />
+                    ) : (
+                        <Play className="mr-2" />
                     )}
-                    {is_paused ? "PLAY" : "PAUSE"}
+                    {showPlaying ? "PAUSE" : "PLAY"}
                 </Button>
             </div>
         );

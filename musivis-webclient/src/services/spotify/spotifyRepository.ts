@@ -6,7 +6,7 @@ import {
     SpotifyUser,
 } from "./spotifyDTOs";
 
-export class Spotify {
+export class SpotifyRepository {
     private static readonly baseUrl = "https://api.spotify.com/v1/";
 
     private static headers(): HeadersInit {
@@ -24,15 +24,22 @@ export class Spotify {
             window.location.href = "/login";
         }
         if (response.ok) {
-            return response.json();
+            // check type of response
+            const contentType = response.headers.get("content-type");
+            if (!contentType) {
+                return {} as T;
+            }
+            if (contentType.includes("application/json")) {
+                return response.json();
+            }
         }
 
         return {} as T;
     }
 
-    private static async put<T, U>(endpoint: string, body: T): Promise<U> {
+    private static async put<T, U>(endpoint: string, body?: T): Promise<U> {
         const response = await fetch(`${this.baseUrl}${endpoint}`, {
-            body: JSON.stringify(body),
+            body: body ? JSON.stringify(body) : undefined,
             method: "PUT",
             headers: this.headers(),
         });
@@ -76,19 +83,12 @@ export class Spotify {
         return this.put("me/player", { device_ids: [deviceId] });
     }
 
-    public static async play(
-        track?: SpotifyTrack,
-        position?: number,
-    ): Promise<void> {
-        const body: SpotifyPlayerPlay = {};
-        if (track) {
-            body.uris = [track.uri];
-        }
-        if (position !== undefined) {
-            body.position_ms = position;
-        }
+    public static async play(): Promise<void> {
+        await this.put("me/player/play");
+    }
 
-        await this.put("me/player/play", body);
+    public static async pause(): Promise<void> {
+        await this.put("me/player/pause");
     }
 
     //#endregion

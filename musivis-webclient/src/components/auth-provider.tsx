@@ -1,5 +1,5 @@
 import { User } from "@/app";
-import { Spotify } from "@/services/spotify/spotify";
+import { SpotifyRepository } from "@/services/spotify/spotifyRepository";
 import { SpotifyAuthorization } from "@/services/spotify/spotifyAuthorization";
 import { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -49,7 +49,7 @@ const AuthProvider = (props: IAuthProviderProps) => {
     // Can be called when everything in SpotifyAuthorization is set (token is retrieved and in local storage)
     const login: IAuthContext["login"] = () => {
         setIsLoggedIn(true);
-        Spotify.getMe()
+        SpotifyRepository.getMe()
             .then((user) => {
                 setUser(user);
             })

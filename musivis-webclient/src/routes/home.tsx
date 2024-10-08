@@ -1,7 +1,7 @@
 // import SpotifyPlayer from "@/components/ui/spotify-player";
 import SpotifyPlayer from "@/components/ui/spotify-player";
 import TrackBrowser from "@/components/ui/track-browser";
-import { Spotify } from "@/services/spotify/spotify";
+import { SpotifyRepository } from "@/services/spotify/spotifyRepository";
 import { SpotifyTrack } from "@/services/spotify/spotifyDTOs";
 import { useEffect, useState } from "react";
 
@@ -12,7 +12,9 @@ function Home() {
     >(undefined);
 
     useEffect(() => {
-        Spotify.getTopTracks().then((tracks) => setTracks(tracks.items));
+        SpotifyRepository.getTopTracks().then((tracks) =>
+            setTracks(tracks.items),
+        );
     }, []);
 
     return (

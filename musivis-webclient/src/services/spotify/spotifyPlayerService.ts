@@ -1,5 +1,6 @@
 import { useSpotifyPlayerStore } from "@/stores/spotifyPlayerStore";
 import { SpotifyDeviceId, WebPlaybackPlayer } from "./spotifyDTOs";
+import { SpotifyRepository } from "./spotifyRepository";
 
 type ReadyListener = (device_id: SpotifyDeviceId) => void;
 type StateListener = (state: WebPlaybackPlayer) => void;
@@ -75,6 +76,8 @@ export class SpotifyPlayerService {
         this.readyListener = ({ device_id }) => {
             console.log("Connected with Device ID", device_id);
             useSpotifyPlayerStore.setState({ isReady: true });
+
+            SpotifyRepository.transferPlaybackToDevice(device_id);
         };
         this.player.addListener("ready", this.readyListener);
 
@@ -95,5 +98,23 @@ export class SpotifyPlayerService {
         this.player.connect().then((success) => {
             console.log("Connected", success);
         });
+    }
+
+    public static async play() {
+        try {
+            await SpotifyRepository.play();
+            useSpotifyPlayerStore.setState({ isPlaying: true });
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    public static async pause() {
+        try {
+            await SpotifyRepository.pause();
+            useSpotifyPlayerStore.setState({ isPlaying: false });
+        } catch (e) {
+            console.error(e);
+        }
     }
 }
