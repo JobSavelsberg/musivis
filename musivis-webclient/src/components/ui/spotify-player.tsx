@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Button } from "./button";
 import { Slider } from "./slider";
 import { Pause, Play } from "lucide-react";
-import { SpotifyTrack } from "@/services/spotify/spotifyDTOs";
+import { PlayableTrack } from "@/services/spotify/spotifyDTOs";
 import { SpotifyPlayerService } from "@/services/spotify/spotifyPlayerService";
 import { useSpotifyPlayerStore } from "@/stores/spotifyPlayerStore";
 
@@ -10,7 +10,7 @@ export default function SpotifyPlayer({
     track,
     progress,
 }: {
-    track: SpotifyTrack | undefined;
+    track: PlayableTrack | null;
     progress: number;
 }) {
     const { isReady, isPlaying } = useSpotifyPlayerStore();
@@ -18,6 +18,8 @@ export default function SpotifyPlayer({
     const [requestedPlayingState, setRequestedPlayingState] = useState<
         boolean | null
     >(null);
+
+    console.log("rerender with trakc", track);
 
     const showPlaying =
         requestedPlayingState !== null ? requestedPlayingState : isPlaying;

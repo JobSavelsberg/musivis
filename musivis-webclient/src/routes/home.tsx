@@ -4,12 +4,12 @@ import TrackBrowser from "@/components/ui/track-browser";
 import { SpotifyRepository } from "@/services/spotify/spotifyRepository";
 import { SpotifyTrack } from "@/services/spotify/spotifyDTOs";
 import { useEffect, useState } from "react";
+import { useSpotifyPlayerStore } from "@/stores/spotifyPlayerStore";
+import { SpotifyPlayerService } from "@/services/spotify/spotifyPlayerService";
 
 function Home() {
     const [tracks, setTracks] = useState<SpotifyTrack[]>([]);
-    const [selectedTrack, setSelectedTrack] = useState<
-        SpotifyTrack | undefined
-    >(undefined);
+    const { currentTrack } = useSpotifyPlayerStore();
 
     useEffect(() => {
         SpotifyRepository.getTopTracks().then((tracks) =>
@@ -17,13 +17,18 @@ function Home() {
         );
     }, []);
 
+    const onTrackClicked = (track: SpotifyTrack) => {
+        // setCurrentTrack(track as PlayableTrack);
+        SpotifyPlayerService.play(track.uri);
+    };
+
     return (
         <div className="flex flex-col p-10 gap-10">
             <TrackBrowser
                 tracks={tracks}
-                onTrackClicked={setSelectedTrack}
+                onTrackClicked={onTrackClicked}
             ></TrackBrowser>
-            <SpotifyPlayer track={selectedTrack} progress={0}></SpotifyPlayer>
+            <SpotifyPlayer track={currentTrack} progress={0}></SpotifyPlayer>
         </div>
     );
 }

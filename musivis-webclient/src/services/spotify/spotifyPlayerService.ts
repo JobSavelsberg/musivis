@@ -1,14 +1,18 @@
 import { useSpotifyPlayerStore } from "@/stores/spotifyPlayerStore";
-import { SpotifyDeviceId, WebPlaybackPlayer } from "./spotifyDTOs";
+import {
+    PlayableTrack,
+    SpotifyDeviceId,
+    WebPlaybackState,
+} from "./spotifyDTOs";
 import { SpotifyRepository } from "./spotifyRepository";
 
 type ReadyListener = (device_id: SpotifyDeviceId) => void;
-type StateListener = (state: WebPlaybackPlayer) => void;
+type StateListener = (state: WebPlaybackState) => void;
 
 type SpotifyPlayerType = {
     addListener: (event: string, cb: StateListener | ReadyListener) => void;
     connect: () => Promise<boolean>;
-    getCurrentState: () => Promise<WebPlaybackPlayer | undefined>;
+    getCurrentState: () => Promise<WebPlaybackState | undefined>;
     pause: () => Promise<void>;
     resume: () => Promise<void>;
     seek: (position: number) => Promise<void>;
@@ -89,6 +93,13 @@ export class SpotifyPlayerService {
 
         this.stateChangedListener = (state) => {
             console.log("State changed", state);
+
+            useSpotifyPlayerStore.setState({
+                isPlaying: !state.paused,
+            });
+            useSpotifyPlayerStore.setState({
+                currentTrack: state.track_window.current_track as PlayableTrack,
+            });
         };
         this.player.addListener(
             "player_state_changed",
@@ -100,9 +111,9 @@ export class SpotifyPlayerService {
         });
     }
 
-    public static async play() {
+    public static async play(trackURI?: string) {
         try {
-            await SpotifyRepository.play();
+            await SpotifyRepository.playTrack(trackURI);
             useSpotifyPlayerStore.setState({ isPlaying: true });
         } catch (e) {
             console.error(e);

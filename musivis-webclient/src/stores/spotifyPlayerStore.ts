@@ -1,4 +1,4 @@
-import { SpotifyTrack } from "@/services/spotify/spotifyDTOs";
+import { PlayableTrack } from "@/services/spotify/spotifyDTOs";
 import { create } from "zustand";
 
 interface SpotifyPlayerStore {
@@ -8,8 +8,8 @@ interface SpotifyPlayerStore {
     isPlaying: boolean;
     setPlaying: (isPlaying: boolean) => void;
 
-    currentTrack: SpotifyTrack | null;
-    setCurrentTrack: (track: SpotifyTrack) => void;
+    currentTrack: PlayableTrack | null;
+    setCurrentTrack: (track: PlayableTrack) => void;
 }
 
 export const useSpotifyPlayerStore = create<SpotifyPlayerStore>((set) => ({
@@ -20,5 +20,5 @@ export const useSpotifyPlayerStore = create<SpotifyPlayerStore>((set) => ({
     setPlaying: (isPlaying: boolean) => set({ isPlaying }),
 
     currentTrack: null,
-    setCurrentTrack: (currentTrack: SpotifyTrack) => set({ currentTrack }),
+    setCurrentTrack: (currentTrack: PlayableTrack) => set({ currentTrack }),
 }));

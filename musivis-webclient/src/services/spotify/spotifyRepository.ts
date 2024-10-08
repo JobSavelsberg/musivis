@@ -1,6 +1,5 @@
 import {
     SpotifyPagedResult,
-    SpotifyPlayerPlay,
     SpotifyTimeRanges,
     SpotifyTrack,
     SpotifyUser,
@@ -83,8 +82,9 @@ export class SpotifyRepository {
         return this.put("me/player", { device_ids: [deviceId] });
     }
 
-    public static async play(): Promise<void> {
-        await this.put("me/player/play");
+    public static async playTrack(trackuri?: string): Promise<void> {
+        const body = trackuri ? { uris: [trackuri] } : undefined;
+        return this.put("me/player/play", body);
     }
 
     public static async pause(): Promise<void> {

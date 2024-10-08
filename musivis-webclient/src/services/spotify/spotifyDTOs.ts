@@ -110,35 +110,6 @@ export type SpotifyPlayerPlay = {
     position_ms?: number;
 };
 
-export type WebPlaybackPlayer = {
-    timestamp: number;
-    context: {
-        uri: string;
-        metadata: unknown;
-    };
-    duration: number;
-    paused: boolean;
-    shuffle: boolean;
-    shuffle_mode: number;
-    position: number;
-    loading: boolean;
-    repeat_mode: number;
-    track_window: WebPlaybackTrackWindow;
-    playback_id: string;
-    playback_quality: string;
-    playback_features: {
-        hifi_status: string;
-        playback_speed: {
-            current: number;
-            selected: number;
-            restricted: boolean;
-        };
-        signal_ids: [];
-        modes: unknown;
-    };
-    playback_speed: number;
-};
-
 export type SpotifyDeviceId = {
     device_id: string;
 };
@@ -153,19 +124,17 @@ export type WebPlaybackTrack = {
     album: {
         uri: string; // Spotify Album URI 'spotify:album:xxxx'
         name: string;
-        images: [
-            {
-                url: string; // "https://image/xxxx"
-            },
-        ];
+        images: {
+            url: string; // "https://image/xxxx"
+        }[];
     };
-    artists: [
-        {
-            uri: string; // Spotify Artist URI 'spotify:artist:xxxx'
-            name: string;
-        },
-    ];
+    artists: {
+        uri: string; // Spotify Artist URI 'spotify:artist:xxxx'
+        name: string;
+    }[];
 };
+
+export type PlayableTrack = SpotifyTrack & WebPlaybackTrack;
 
 export type WebPlaybackTrackWindow = {
     current_track: WebPlaybackTrack; // The track currently on local playback
@@ -174,10 +143,38 @@ export type WebPlaybackTrackWindow = {
 };
 
 export type WebPlaybackState = {
+    timestamp: number; // Unix Millisecond Timestamp
     context: {
         uri: string; // The URI of the context (can be null) 'spotify:album:xxx'
         metadata: object; // Additional metadata for the context (can be null)
     };
+
+    duration: number; // The duration of the track.
+    paused: boolean; // Whether the current track is paused.
+    position: number; // The position_ms of the current track.
+    shuffle: boolean; // True if shuffled, false otherwise.
+    shuffle_mode: number; // The shuffle mode. 0 will be off, 1 will be on.
+    repeat_mode: number; // The repeat mode. No repeat mode is 0,
+    // repeat context is 1 and repeat track is 2.
+
+    track_window: WebPlaybackTrackWindow;
+
+    // Playback options
+    playback_id: string; // A unique identifier of the current playback.
+    playback_speed: number; // The current playback speed. This value is not
+    playback_quality: string; // The current playback quality. This value is either
+    playback_features: {
+        hifi_status: string;
+        playback_speed: {
+            current: number;
+            selected: number;
+            restricted: boolean;
+        };
+        signal_ids: [];
+        modes: unknown;
+    };
+
+    // Disallows
     disallows: {
         // A simplified set of restriction controls for
         pausing: boolean; // The current track. By default, these fields
@@ -189,10 +186,4 @@ export type WebPlaybackState = {
         skipping_prev: boolean; // `seeking` will be set to `true` when playing an
         // ad track.
     };
-    paused: boolean; // Whether the current track is paused.
-    position: number; // The position_ms of the current track.
-    repeat_mode: number; // The repeat mode. No repeat mode is 0,
-    // repeat context is 1 and repeat track is 2.
-    shuffle: boolean; // True if shuffled, false otherwise.
-    track_window: WebPlaybackTrackWindow;
 };
