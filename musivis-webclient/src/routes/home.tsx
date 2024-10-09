@@ -28,7 +28,7 @@ function Home() {
                 tracks={tracks}
                 onTrackClicked={onTrackClicked}
             ></TrackBrowser>
-            <SpotifyPlayer track={currentTrack} progress={0}></SpotifyPlayer>
+            <SpotifyPlayer></SpotifyPlayer>
         </div>
     );
 }

@@ -79,7 +79,7 @@ export class SpotifyPlayerService {
 
         this.readyListener = ({ device_id }) => {
             console.log("Connected with Device ID", device_id);
-            useSpotifyPlayerStore.setState({ isReady: true });
+            useSpotifyPlayerStore.getState().setReady(true);
 
             SpotifyRepository.transferPlaybackToDevice(device_id);
         };
@@ -87,7 +87,7 @@ export class SpotifyPlayerService {
 
         this.notReadyListener = ({ device_id }) => {
             console.warn("Device ID has gone offline", device_id);
-            useSpotifyPlayerStore.setState({ isReady: false });
+            useSpotifyPlayerStore.getState().setReady(false);
         };
         this.player.addListener("not_ready", this.notReadyListener);
 
@@ -97,9 +97,7 @@ export class SpotifyPlayerService {
             if (
                 useSpotifyPlayerStore.getState().isPlaying !== isSpotifyPlaying
             ) {
-                useSpotifyPlayerStore.setState({
-                    isPlaying: !state.paused,
-                });
+                useSpotifyPlayerStore.getState().setPlaying(!state.paused);
             }
 
             const spotifyTrackPlaying = state.track_window
@@ -108,13 +106,18 @@ export class SpotifyPlayerService {
                 useSpotifyPlayerStore.getState().currentTrack?.uri !==
                 spotifyTrackPlaying.uri
             ) {
-                useSpotifyPlayerStore.setState({
-                    currentTrack: state.track_window
-                        .current_track as PlayableTrack,
-                });
+                useSpotifyPlayerStore
+                    .getState()
+                    .setCurrentTrack(
+                        state.track_window.current_track as PlayableTrack,
+                    );
+            }
+
+            // Make sure position is correct
+            if (state.position !== useSpotifyPlayerStore.getState().position) {
+                useSpotifyPlayerStore.getState().setPosition(state.position);
             }
         };
-
         this.player.addListener(
             "player_state_changed",
             this.stateChangedListener,
@@ -128,7 +131,7 @@ export class SpotifyPlayerService {
     public static async play(trackURI?: string) {
         try {
             await SpotifyRepository.playTrack(trackURI);
-            useSpotifyPlayerStore.setState({ isPlaying: true });
+            useSpotifyPlayerStore.getState().setPlaying(true);
         } catch (e) {
             console.error(e);
         }
@@ -137,9 +140,14 @@ export class SpotifyPlayerService {
     public static async pause() {
         try {
             await SpotifyRepository.pause();
-            useSpotifyPlayerStore.setState({ isPlaying: false });
+            useSpotifyPlayerStore.getState().setPlaying(false);
         } catch (e) {
             console.error(e);
         }
+    }
+
+    public static async seek(position: number) {
+        this.player?.seek(position);
+        useSpotifyPlayerStore.getState().setPosition(position);
     }
 }

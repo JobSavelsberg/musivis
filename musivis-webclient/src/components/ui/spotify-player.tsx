@@ -2,18 +2,12 @@ import { useEffect, useState } from "react";
 import { Button } from "./button";
 import { Slider } from "./slider";
 import { Pause, Play } from "lucide-react";
-import { PlayableTrack } from "@/services/spotify/spotifyDTOs";
 import { SpotifyPlayerService } from "@/services/spotify/spotifyPlayerService";
 import { useSpotifyPlayerStore } from "@/stores/spotifyPlayerStore";
 
-export default function SpotifyPlayer({
-    track,
-    progress,
-}: {
-    track: PlayableTrack | null;
-    progress: number;
-}) {
-    const { isReady, isPlaying } = useSpotifyPlayerStore();
+export default function SpotifyPlayer() {
+    const { isReady, isPlaying, currentTrack, position } =
+        useSpotifyPlayerStore();
     // Used to make the play/pause button more responsive
     const [requestedPlayingState, setRequestedPlayingState] = useState<
         boolean | null
@@ -29,8 +23,7 @@ export default function SpotifyPlayer({
     }, []);
 
     function handleSeek(value: number[]) {
-        console.log(value);
-        // Spotify.seek(value);
+        SpotifyPlayerService.seek(value[0]);
     }
 
     function handlePlayPause() {
@@ -53,30 +46,30 @@ export default function SpotifyPlayer({
         return (
             <div>
                 <div className="flex items-center mb-4">
-                    {track?.album.images[0].url && (
+                    {currentTrack?.album.images[0].url && (
                         <img
-                            src={track.album.images[0].url}
+                            src={currentTrack.album.images[0].url}
                             className="w-16 h-16 mr-4"
                             alt="Now playing"
                         />
                     )}
                     <div>
-                        <div className="font-bold">{track?.name}</div>
+                        <div className="font-bold">{currentTrack?.name}</div>
                         <div className="text-sm text-zinc-400">
-                            {track?.artists[0].name}
+                            {currentTrack?.artists[0].name}
                         </div>
                     </div>
                 </div>
                 <Slider
-                    value={[progress]}
-                    max={track?.duration_ms || 100}
-                    step={1000}
+                    value={[position]}
+                    max={currentTrack?.duration_ms || 1000}
+                    step={200}
                     className="mb-4"
                     onValueChange={handleSeek}
                 />
                 <div className="flex justify-between text-sm mb-4">
-                    <span>{formatTime(progress)}</span>
-                    <span>{formatTime(track?.duration_ms || 0)}</span>
+                    <span>{formatTime(position)}</span>
+                    <span>{formatTime(currentTrack?.duration_ms || 0)}</span>
                 </div>
                 <Button onClick={handlePlayPause}>
                     {showPlaying ? (
