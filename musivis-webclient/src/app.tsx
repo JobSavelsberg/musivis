@@ -31,17 +31,19 @@ function App() {
     }, []);
 
     return (
-        <>
+        <div className="flex flex-col h-screen">
             <header className="flex gap-4 p-4">
                 <h1 className="font-bold text-2xl grow">Musivis</h1>
                 <Profile user={user} onLogOut={logout}></Profile>
             </header>
-            <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/login/callback" element={<Callback />} />
-            </Routes>
-        </>
+            <main className="flex-grow flex flex-col">
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/login/callback" element={<Callback />} />
+                </Routes>
+            </main>
+        </div>
     );
 }
 

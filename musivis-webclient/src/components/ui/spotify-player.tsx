@@ -45,40 +45,45 @@ export default function SpotifyPlayer() {
     } else {
         return (
             <div>
-                <div className="flex items-center mb-4">
-                    {currentTrack?.album.images[0].url && (
-                        <img
-                            src={currentTrack.album.images[0].url}
-                            className="w-16 h-16 mr-4"
-                            alt="Now playing"
-                        />
-                    )}
-                    <div>
-                        <div className="font-bold">{currentTrack?.name}</div>
-                        <div className="text-sm text-zinc-400">
-                            {currentTrack?.artists[0].name}
+                <div className="grid grid-cols-3 gap-4 mb-3">
+                    <div className="flex items-center">
+                        {currentTrack?.album.images[0].url && (
+                            <img
+                                src={currentTrack.album.images[0].url}
+                                className="w-16 h-16 mr-4"
+                                alt="Now playing"
+                            />
+                        )}
+                        <div>
+                            <div className="font-bold">
+                                {currentTrack?.name}
+                            </div>
+                            <div className="text-sm text-zinc-400">
+                                {currentTrack?.artists[0].name}
+                            </div>
                         </div>
                     </div>
+                    <div className="flex items-center justify-center">
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={handlePlayPause}
+                            className="rounded-full"
+                        >
+                            {showPlaying ? <Pause /> : <Play />}
+                        </Button>
+                    </div>
                 </div>
-                <Slider
-                    value={[position]}
-                    max={currentTrack?.duration_ms || 1000}
-                    step={200}
-                    className="mb-4"
-                    onValueChange={handleSeek}
-                />
-                <div className="flex justify-between text-sm mb-4">
+                <div className="flex items-center text-sm gap-3">
                     <span>{formatTime(position)}</span>
+                    <Slider
+                        value={[position]}
+                        max={currentTrack?.duration_ms || 1000}
+                        step={200}
+                        onValueChange={handleSeek}
+                    />
                     <span>{formatTime(currentTrack?.duration_ms || 0)}</span>
                 </div>
-                <Button onClick={handlePlayPause}>
-                    {showPlaying ? (
-                        <Pause className="mr-2" />
-                    ) : (
-                        <Play className="mr-2" />
-                    )}
-                    {showPlaying ? "PAUSE" : "PLAY"}
-                </Button>
             </div>
         );
     }

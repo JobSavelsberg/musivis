@@ -20,11 +20,13 @@ function Home() {
     };
 
     return (
-        <div className="flex flex-col p-10 gap-10">
+        <div className="flex-grow flex flex-col p-4 gap-10">
             <TrackBrowser
                 tracks={tracks}
                 onTrackClicked={onTrackClicked}
             ></TrackBrowser>
+            {/* Grow */}
+            <div className="flex-grow"></div>
             <SpotifyPlayer></SpotifyPlayer>
         </div>
     );
