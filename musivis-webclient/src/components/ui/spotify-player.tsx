@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { Button } from "./button";
-import { Slider } from "./slider";
 import { Pause, Play } from "lucide-react";
 import { SpotifyPlayerService } from "@/services/spotify/spotifyPlayerService";
 import { useSpotifyPlayerStore } from "@/stores/spotifyPlayerStore";
+import { Seeker } from "./seeker";
 
 export default function SpotifyPlayer() {
     const { isReady, isPlaying, currentTrack, position } =
@@ -45,7 +45,7 @@ export default function SpotifyPlayer() {
     } else {
         return (
             <div>
-                <div className="grid grid-cols-3 gap-4 mb-3">
+                <div className="grid grid-cols-3 gap-4">
                     <div className="flex items-center">
                         {currentTrack?.album.images[0].url && (
                             <img
@@ -63,7 +63,7 @@ export default function SpotifyPlayer() {
                             </div>
                         </div>
                     </div>
-                    <div className="flex items-center justify-center">
+                    <div className="flex items-end justify-center">
                         <Button
                             variant="ghost"
                             size="icon"
@@ -74,9 +74,10 @@ export default function SpotifyPlayer() {
                         </Button>
                     </div>
                 </div>
-                <div className="flex items-center text-sm gap-3">
+                <div className="flex items-center text-sm gap-4">
                     <span>{formatTime(position)}</span>
-                    <Slider
+                    <Seeker
+                        className="h-12"
                         value={[position]}
                         max={currentTrack?.duration_ms || 1000}
                         step={200}

@@ -20,7 +20,7 @@ function Home() {
     };
 
     return (
-        <div className="flex-grow flex flex-col p-4 gap-10">
+        <div className="flex-grow flex flex-col gap-10">
             <TrackBrowser
                 tracks={tracks}
                 onTrackClicked={onTrackClicked}
