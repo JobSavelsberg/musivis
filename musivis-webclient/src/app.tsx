@@ -50,10 +50,12 @@ function App() {
         <div className="flex flex-col h-screen px-4 pt-4 pb-2">
             <header className="grid grid-cols-3 items-center">
                 <h1 className="font-bold text-2xl grow">Musivis</h1>
-                <Input
-                    placeholder="What music do you want to visualize?"
-                    onChange={(event) => setSearch(event.target.value)}
-                />
+                {user && (
+                    <Input
+                        placeholder="What music do you want to visualize?"
+                        onChange={(event) => setSearch(event.target.value)}
+                    />
+                )}
                 <div className="justify-self-end">
                     <Profile user={user} onLogOut={logout} />
                 </div>
