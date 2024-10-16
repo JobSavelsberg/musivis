@@ -1,17 +1,17 @@
-// import SpotifyPlayer from "@/components/ui/spotify-player";
 import SpotifyPlayer from "@/components/ui/spotify-player";
 import TrackBrowser from "@/components/ui/track-browser";
 import { SpotifyRepository } from "@/services/spotify/spotifyRepository";
-import { SpotifyTrack } from "@/services/spotify/spotifyDTOs";
-import { useEffect, useState } from "react";
+import { PlayableTrack, SpotifyTrack } from "@/services/spotify/spotifyDTOs";
+import { useEffect } from "react";
 import { SpotifyPlayerService } from "@/services/spotify/spotifyPlayerService";
+import { useSpotifyTracksStore } from "@/stores/spotifyTracksStore";
 
 function Home() {
-    const [tracks, setTracks] = useState<SpotifyTrack[]>([]);
+    const { tracks, setTracks } = useSpotifyTracksStore();
 
     useEffect(() => {
         SpotifyRepository.getTopTracks().then((tracks) =>
-            setTracks(tracks.items),
+            setTracks(tracks.items as PlayableTrack[]),
         );
     }, []);
 

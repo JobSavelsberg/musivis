@@ -1,11 +1,15 @@
 import { Route, Routes } from "react-router-dom";
 import Home from "./routes/home";
 import Callback from "./routes/callback";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import Login from "./routes/login";
 import Profile from "./components/ui/profile";
 import { AuthContext } from "./components/auth-provider";
 import { Input } from "./components/ui/input";
+import { useDebounce } from "./hooks/useDebounce";
+import { SpotifyRepository } from "./services/spotify/spotifyRepository";
+import { PlayableTrack } from "./services/spotify/spotifyDTOs";
+import { useSpotifyTracksStore } from "./stores/spotifyTracksStore";
 
 export type User = {
     display_name: string;
@@ -20,6 +24,9 @@ export type User = {
 
 function App() {
     const { logout, user } = useContext(AuthContext);
+    const [search, setSearch] = useState("");
+    const { setTracks } = useSpotifyTracksStore();
+    const debouncedSearch = useDebounce(search, 150);
 
     useEffect(() => {
         const backendUrl = import.meta.env.VITE_MUSIVIS_BACKEND_URL as string;
@@ -31,9 +38,13 @@ function App() {
             .catch((error) => console.warn("Error fetching data:", error));
     }, []);
 
-    const handleSearchInputChange = (searchTerm: string) => {
-        console.log("Search term:", searchTerm);
-    };
+    useEffect(() => {
+        if (debouncedSearch) {
+            SpotifyRepository.search(debouncedSearch).then((result) => {
+                setTracks(result.tracks.items as PlayableTrack[]);
+            });
+        }
+    }, [debouncedSearch]);
 
     return (
         <div className="flex flex-col h-screen px-4 pt-4 pb-2">
@@ -41,7 +52,7 @@ function App() {
                 <h1 className="font-bold text-2xl grow">Musivis</h1>
                 <Input
                     placeholder="What music do you want to visualize?"
-                    onChange={(e) => handleSearchInputChange(e.target.value)}
+                    onChange={(event) => setSearch(event.target.value)}
                 />
                 <div className="justify-self-end">
                     <Profile user={user} onLogOut={logout} />

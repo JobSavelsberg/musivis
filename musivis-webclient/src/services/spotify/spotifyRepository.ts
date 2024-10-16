@@ -75,6 +75,19 @@ export class SpotifyRepository {
         return this.get(uriWithParams);
     }
 
+    public static async search(
+        query: string,
+    ): Promise<{ tracks: SpotifyPagedResult<SpotifyTrack> }> {
+        const uri = "search";
+
+        const params = new URLSearchParams();
+        params.append("q", query);
+        params.append("type", "track");
+        const uriWithParams = `${uri}?${params.toString()}`;
+
+        return this.get(uriWithParams);
+    }
+
     //#region Player
     public static async transferPlaybackToDevice(
         deviceId: string,
