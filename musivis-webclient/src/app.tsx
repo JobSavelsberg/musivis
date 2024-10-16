@@ -5,6 +5,7 @@ import { useContext, useEffect } from "react";
 import Login from "./routes/login";
 import Profile from "./components/ui/profile";
 import { AuthContext } from "./components/auth-provider";
+import { Input } from "./components/ui/input";
 
 export type User = {
     display_name: string;
@@ -30,11 +31,21 @@ function App() {
             .catch((error) => console.warn("Error fetching data:", error));
     }, []);
 
+    const handleSearchInputChange = (searchTerm: string) => {
+        console.log("Search term:", searchTerm);
+    };
+
     return (
         <div className="flex flex-col h-screen px-4 pt-4 pb-2">
-            <header className="flex gap-4">
+            <header className="grid grid-cols-3 items-center">
                 <h1 className="font-bold text-2xl grow">Musivis</h1>
-                <Profile user={user} onLogOut={logout}></Profile>
+                <Input
+                    placeholder="What music do you want to visualize?"
+                    onChange={(e) => handleSearchInputChange(e.target.value)}
+                />
+                <div className="justify-self-end">
+                    <Profile user={user} onLogOut={logout} />
+                </div>
             </header>
             <main className="flex-grow flex flex-col mt-4">
                 <Routes>
