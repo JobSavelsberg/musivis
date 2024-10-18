@@ -1,6 +1,7 @@
 import { SpotifyTrack } from "@/services/spotify/spotifyDTOs";
 import { Card, CardContent } from "./card";
 import { cn } from "@/libs/utils";
+import { Play } from "lucide-react";
 
 export default function TrackCard({
     track,
@@ -23,12 +24,15 @@ export default function TrackCard({
             )}
             onClick={onClick}
         >
-            <div className="relative pb-[100%]">
+            <div className="relative pb-[100%] overflow-hidden group">
                 <img
                     src={coverUrl}
                     alt={`Cover art for ${title} by ${artists}`}
-                    className="absolute inset-0 h-full w-full object-cover"
+                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-150 ease-in-out group-hover:scale-110"
                 />
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-150">
+                    <Play />
+                </div>
             </div>
             <CardContent className="p-2">
                 <h3 className="text-center text-sm font-semibold truncate">

@@ -16,7 +16,7 @@ export default function TrackBrowser({
                     <TrackCard
                         key={track.id}
                         track={track}
-                        className="w-1/12"
+                        className="w-28"
                         onClick={() => onTrackClicked(track)}
                     />
                 ))}
