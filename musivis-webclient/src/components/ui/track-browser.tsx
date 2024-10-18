@@ -14,6 +14,8 @@ export default function TrackBrowser({
             <div className="flex space-x-4 overflow-x-auto pb-4">
                 {tracks.map((track) => (
                     <TrackCard
+                        // Make all tracks tabbable
+                        tabIndex={0}
                         key={track.id}
                         track={track}
                         className="w-28"

@@ -7,10 +7,12 @@ export default function TrackCard({
     track,
     className,
     onClick,
+    tabIndex,
 }: {
     track: SpotifyTrack;
     className?: string;
     onClick?: () => void;
+    tabIndex?: number;
 }) {
     const coverUrl = track.album.images[0].url;
     const title = track.name;
@@ -18,11 +20,17 @@ export default function TrackCard({
 
     return (
         <Card
+            tabIndex={tabIndex}
             className={cn(
-                "overflow-hidden cursor-pointer hover:bg-accent transition-colors",
+                "overflow-hidden cursor-pointer hover:bg-accent transition-colors focus-visible:ring-2 focus:ring-2",
                 className,
             )}
             onClick={onClick}
+            onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                    onClick?.();
+                }
+            }}
         >
             <div className="relative pb-[100%] overflow-hidden group">
                 <img

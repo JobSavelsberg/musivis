@@ -10,6 +10,7 @@ import { useDebounce } from "./hooks/useDebounce";
 import { SpotifyRepository } from "./services/spotify/spotifyRepository";
 import { PlayableTrack } from "./services/spotify/spotifyDTOs";
 import { useSpotifyTracksStore } from "./stores/spotifyTracksStore";
+import { SearchIcon } from "lucide-react";
 
 export type User = {
     display_name: string;
@@ -25,7 +26,7 @@ export type User = {
 function App() {
     const { logout, user, isLoggedIn } = useContext(AuthContext);
     const [search, setSearch] = useState("");
-    const { setTracks } = useSpotifyTracksStore();
+    const { setTracks, setIsSearching } = useSpotifyTracksStore();
     const debouncedSearch = useDebounce(search, 150);
 
     useEffect(() => {
@@ -50,12 +51,25 @@ function App() {
         <div className="flex flex-col h-screen px-4 pt-4 pb-2">
             <header className="grid grid-cols-3 items-center">
                 <h1 className="font-bold text-2xl grow">Musivis</h1>
-                <div>
+                <div className="z-10">
                     {isLoggedIn && (
-                        <Input
-                            placeholder="What music do you want to visualize?"
-                            onChange={(event) => setSearch(event.target.value)}
-                        />
+                        <div className="relative">
+                            <Input
+                                placeholder="What music do you want to visualize?"
+                                onChange={(event) =>
+                                    setSearch(event.target.value)
+                                }
+                                onFocus={() => setIsSearching(true)}
+                                // Set a small timeout before setting searching to false to allow tabbing to the results
+                                onBlur={() =>
+                                    setTimeout(() => setIsSearching(false), 100)
+                                }
+                                className="pl-10"
+                            />
+                            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                <SearchIcon className="w-5 h-5 text-gray-400" />
+                            </div>
+                        </div>
                     )}
                 </div>
                 <div className="justify-self-end">
