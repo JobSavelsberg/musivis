@@ -23,7 +23,7 @@ export type User = {
 };
 
 function App() {
-    const { logout, user } = useContext(AuthContext);
+    const { logout, user, isLoggedIn } = useContext(AuthContext);
     const [search, setSearch] = useState("");
     const { setTracks } = useSpotifyTracksStore();
     const debouncedSearch = useDebounce(search, 150);
@@ -44,18 +44,20 @@ function App() {
                 setTracks(result.tracks.items as PlayableTrack[]);
             });
         }
-    }, [debouncedSearch]);
+    }, [debouncedSearch, setTracks]);
 
     return (
         <div className="flex flex-col h-screen px-4 pt-4 pb-2">
             <header className="grid grid-cols-3 items-center">
                 <h1 className="font-bold text-2xl grow">Musivis</h1>
-                {user && (
-                    <Input
-                        placeholder="What music do you want to visualize?"
-                        onChange={(event) => setSearch(event.target.value)}
-                    />
-                )}
+                <div>
+                    {isLoggedIn && (
+                        <Input
+                            placeholder="What music do you want to visualize?"
+                            onChange={(event) => setSearch(event.target.value)}
+                        />
+                    )}
+                </div>
                 <div className="justify-self-end">
                     <Profile user={user} onLogOut={logout} />
                 </div>
