@@ -1,4 +1,6 @@
 import {
+    SpotifyAudioAnalysis,
+    SpotifyAudioFeatures,
     SpotifyPagedResult,
     SpotifyTimeRanges,
     SpotifyTrack,
@@ -102,6 +104,21 @@ export class SpotifyRepository {
 
     public static async pause(): Promise<void> {
         await this.put("me/player/pause");
+    }
+
+    //#endregion
+
+    //#region Features & analysis
+    public static async getAudioFeatures(
+        trackId: string,
+    ): Promise<SpotifyAudioFeatures> {
+        return this.get(`audio-features/${trackId}`);
+    }
+
+    public static async getAudioAnalysis(
+        trackId: string,
+    ): Promise<SpotifyAudioAnalysis> {
+        return this.get(`audio-analysis/${trackId}`);
     }
 
     //#endregion
