@@ -27,7 +27,7 @@ function Home() {
     const shouldShowTracks = isSearching || isPickingTrack;
 
     return (
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col flex-grow">
             <div
                 // Add a bit of padding to make accidentally leaving the area less likely
                 className={`transition-all duration-200  ${
@@ -51,7 +51,9 @@ function Home() {
                 ></TrackBrowser>
             </div>
 
-            <Visualization track={currentTrack}></Visualization>
+            <div>
+                <Visualization track={currentTrack}></Visualization>
+            </div>
             <div className="flex-grow"></div>
             <SpotifyPlayer></SpotifyPlayer>
         </div>

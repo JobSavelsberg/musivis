@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { Button } from "./button";
-import { Pause, Play } from "lucide-react";
+import { Pause, Play, Loader2 } from "lucide-react"; // Import Loader icon
 import { SpotifyPlayerService } from "@/services/spotify/spotifyPlayerService";
 import { useSpotifyPlayerStore } from "@/stores/spotifyPlayerStore";
 import { Seeker } from "./seeker";
+import { Skeleton } from "./skeleton";
 
 export default function SpotifyPlayer() {
     const { isReady, isPlaying, currentTrack, position } =
@@ -40,54 +41,81 @@ export default function SpotifyPlayer() {
         }
     }
 
-    if (!isReady) {
-        return <div>Loading...</div>;
-    } else {
-        return (
-            <div>
-                <div className="grid grid-cols-3 gap-4">
-                    <div className="flex items-center">
-                        {currentTrack?.album.images[0].url && (
-                            <img
-                                src={currentTrack.album.images[0].url}
-                                className="w-16 h-16 mr-4"
-                                alt="Now playing"
-                            />
-                        )}
-                        <div>
-                            <div className="font-bold">
-                                {currentTrack?.name}
+    return (
+        <div>
+            <div className="grid grid-cols-3 gap-4">
+                <div className="flex items-center">
+                    {isReady ? (
+                        <>
+                            {currentTrack?.album.images[0].url && (
+                                <img
+                                    src={currentTrack.album.images[0].url}
+                                    className="w-16 h-16 mr-4"
+                                    alt="Now playing"
+                                />
+                            )}
+                            <div>
+                                <div className="font-bold">
+                                    {currentTrack?.name}
+                                </div>
+                                <div className="text-sm text-zinc-400">
+                                    {currentTrack?.artists[0].name}
+                                </div>
                             </div>
-                            <div className="text-sm text-zinc-400">
-                                {currentTrack?.artists[0].name}
+                        </>
+                    ) : (
+                        <>
+                            <Skeleton className="w-16 h-16 mr-4" />
+                            <div>
+                                <Skeleton className="w-32 h-5 mb-2" />
+                                <Skeleton className="w-24 h-4" />
                             </div>
-                        </div>
-                    </div>
-                    <div className="flex items-end justify-center">
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={handlePlayPause}
-                            className="rounded-full"
-                        >
-                            {showPlaying ? <Pause /> : <Play />}
-                        </Button>
-                    </div>
+                        </>
+                    )}
                 </div>
-                <div className="flex items-center text-sm gap-4">
-                    <span>{formatTime(position)}</span>
-                    <Seeker
-                        className="h-12"
-                        value={[position]}
-                        max={currentTrack?.duration_ms || 1000}
-                        step={200}
-                        onValueChange={handleSeek}
-                    />
-                    <span>{formatTime(currentTrack?.duration_ms || 0)}</span>
+
+                <div className="flex items-end justify-center">
+                    <div className="h-10 w-10 flex items-center justify-center">
+                        {isReady ? (
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={handlePlayPause}
+                                className="w-full h-full rounded-full"
+                            >
+                                {showPlaying ? <Pause /> : <Play />}
+                            </Button>
+                        ) : (
+                            <Loader2 className="w-full h-full animate-spin text-muted" />
+                        )}
+                    </div>
                 </div>
             </div>
-        );
-    }
+            <div className="flex items-center text-sm gap-4 h-12">
+                {isReady ? (
+                    <>
+                        <span className="w-7">{formatTime(position)}</span>
+                        <Seeker
+                            className="h-12"
+                            value={[position]}
+                            max={currentTrack?.duration_ms || 1000}
+                            step={200}
+                            onValueChange={handleSeek}
+                        />
+                        <span className="w-7">
+                            {formatTime(currentTrack?.duration_ms || 0)}
+                        </span>
+                    </>
+                ) : (
+                    <>
+                        <Skeleton className="w-7 h-4" />
+                        <Skeleton className="flex-grow h-2" />
+                        <Skeleton className="w-7 h-4" />
+                    </>
+                )}
+            </div>
+        </div>
+    );
 }
 
 function formatTime(ms: number): string {
