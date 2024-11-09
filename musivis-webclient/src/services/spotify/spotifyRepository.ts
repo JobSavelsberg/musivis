@@ -21,9 +21,23 @@ export class SpotifyRepository {
     }
 
     private static async parseResponse<T>(response: Response): Promise<T> {
-        if (response.status === 401) {
-            window.location.href = "/login";
+        switch (response.status) {
+            case 401:
+                window.location.href = "/login";
+                break;
+            case 403:
+            case 404:
+            case 500: {
+                let errorMessage: string = `${response.status} ${response.statusText}`;
+                try {
+                    errorMessage = (await response.json()).error.message;
+                } catch (e) {
+                    console.error(e);
+                }
+                throw new Error(errorMessage);
+            }
         }
+
         if (response.ok) {
             // check type of response
             const contentType = response.headers.get("content-type");

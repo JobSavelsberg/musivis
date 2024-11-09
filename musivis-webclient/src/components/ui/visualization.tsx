@@ -5,6 +5,7 @@ import {
 } from "@/services/spotify/spotifyDTOs";
 import { SpotifyRepository } from "@/services/spotify/spotifyRepository";
 import React, { useEffect, useState } from "react";
+import { Skeleton } from "./skeleton";
 
 interface VisualizationProps {
     track: PlayableTrack | null;
@@ -15,11 +16,21 @@ const Visualization: React.FC<VisualizationProps> = ({ track }) => {
         useState<SpotifyAudioFeatures | null>(null);
     const [audioAnalysis, setAudioAnalysis] =
         useState<SpotifyAudioAnalysis | null>(null);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         if (track) {
-            SpotifyRepository.getAudioFeatures(track.id).then(setAudioFeatures);
-            SpotifyRepository.getAudioAnalysis(track.id).then(setAudioAnalysis);
+            setError(null); // Reset error state
+            SpotifyRepository.getAudioFeatures(track.id)
+                .then(setAudioFeatures)
+                .catch((err) => {
+                    setError(`Failed to fetch audio features: ${err.message}`);
+                });
+            SpotifyRepository.getAudioAnalysis(track.id)
+                .then(setAudioAnalysis)
+                .catch((err) => {
+                    setError(`Failed to fetch audio analysis: ${err.message}`);
+                });
         }
     }, [track]);
 
@@ -27,6 +38,14 @@ const Visualization: React.FC<VisualizationProps> = ({ track }) => {
         return <div></div>;
     }
 
+    if (error) {
+        return <div>{error}</div>;
+    }
+
+    if (!audioAnalysis || !audioAnalysis.track || !audioFeatures) {
+        // skeleton
+        return <Skeleton className="h-32" />;
+    }
     return (
         <div>
             {audioFeatures && (
