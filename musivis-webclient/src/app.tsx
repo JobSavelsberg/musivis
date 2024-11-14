@@ -1,12 +1,16 @@
-import { Navigate, Route, Routes } from "react-router-dom";
 import Home from "./routes/home";
 import Callback from "./routes/callback";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Login from "./routes/login";
-import { SpotifyAuthorization } from "./services/spotify/spotifyAuthorization";
 import Profile from "./components/ui/profile";
-import { Spotify } from "./services/spotify/spotify";
-import { ThemeProvider } from "./contexts/themeContext";
+import { AuthContext } from "./components/auth-provider";
+import { Input } from "./components/ui/input";
+import { useDebounce } from "./hooks/useDebounce";
+import { SpotifyRepository } from "./services/spotify/spotifyRepository";
+import { PlayableTrack } from "./services/spotify/spotifyDTOs";
+import { useSpotifyTracksStore } from "./stores/spotifyTracksStore";
+import { SearchIcon } from "lucide-react";
+import { Route, Routes } from "react-router-dom";
 
 export type User = {
     display_name: string;
@@ -20,6 +24,11 @@ export type User = {
 };
 
 function App() {
+    const { logout, user, isLoggedIn } = useContext(AuthContext);
+    const [search, setSearch] = useState("");
+    const { setTracks, setIsSearching } = useSpotifyTracksStore();
+    const debouncedSearch = useDebounce(search, 150);
+
     useEffect(() => {
         const backendUrl = import.meta.env.VITE_MUSIVIS_BACKEND_URL as string;
         fetch(`${backendUrl}/status`)
@@ -27,43 +36,54 @@ function App() {
             .then((responseText) =>
                 console.log("Backend status:", responseText),
             )
-            .catch((error) => console.error("Error fetching data:", error));
+            .catch((error) => console.warn("Error fetching data:", error));
     }, []);
-
-    const [user, setUser] = useState<User | null>(null);
 
     useEffect(() => {
-        if (SpotifyAuthorization.isLoggedIn()) {
-            Spotify.getMe().then(setUser);
+        if (debouncedSearch) {
+            SpotifyRepository.search(debouncedSearch).then((result) => {
+                setTracks(result.tracks.items as PlayableTrack[]);
+            });
         }
-    }, []);
-
-    const handleLogOut = () => {
-        SpotifyAuthorization.logOut();
-        setUser(null);
-    };
+    }, [debouncedSearch, setTracks]);
 
     return (
-        <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-            <header className="flex gap-4 p-4">
+        <div className="flex flex-col h-screen px-4 pt-4 pb-2">
+            <header className="grid grid-cols-3 items-center">
                 <h1 className="font-bold text-2xl grow">Musivis</h1>
-                <Profile user={user} onLogOut={handleLogOut}></Profile>
+                <div className="z-10">
+                    {isLoggedIn && (
+                        <div className="relative">
+                            <Input
+                                placeholder="What music do you want to visualize?"
+                                onChange={(event) =>
+                                    setSearch(event.target.value)
+                                }
+                                onFocus={() => setIsSearching(true)}
+                                // Set a small timeout before setting searching to false to allow tabbing to the results
+                                onBlur={() =>
+                                    setTimeout(() => setIsSearching(false), 100)
+                                }
+                                className="pl-10"
+                            />
+                            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                <SearchIcon className="w-5 h-5 text-gray-400" />
+                            </div>
+                        </div>
+                    )}
+                </div>
+                <div className="justify-self-end">
+                    <Profile user={user} onLogOut={logout} />
+                </div>
             </header>
-            <Routes>
-                <Route
-                    path="/"
-                    element={
-                        SpotifyAuthorization.isLoggedIn() ? (
-                            <Home />
-                        ) : (
-                            <Navigate to="/login" />
-                        )
-                    }
-                />
-                <Route path="/login" element={<Login />} />
-                <Route path="/login/callback" element={<Callback />} />
-            </Routes>
-        </ThemeProvider>
+            <main className="flex-grow flex flex-col mt-4">
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/login/callback" element={<Callback />} />
+                </Routes>
+            </main>
+        </div>
     );
 }
 

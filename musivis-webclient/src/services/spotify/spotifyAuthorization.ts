@@ -17,7 +17,8 @@ export class SpotifyAuthorization {
         "user-read-email", // Get user email (might not necessarily need this)
         "user-top-read", // Get top tracks
         "app-remote-control", // Control playback
-        "streaming" // Play music
+        "user-modify-playback-state", // Allows us to give control to the web sdk player
+        "streaming", // Play music
     ];
 
     public static isLoggedIn(): boolean {
@@ -82,9 +83,6 @@ export class SpotifyAuthorization {
 
         localStorage.setItem("expiry", expiry.toISOString());
         localStorage.setItem("refresh_token", response.refresh_token);
-
-        // Refresh
-        window.location.href = "/";
     }
 
     public static logOut(): void {
