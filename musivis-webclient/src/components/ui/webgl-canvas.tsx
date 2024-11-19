@@ -1,9 +1,10 @@
-import { useRef, useEffect } from "react";
+import { drawGraphics } from "@/libs/graphics/graphics";
+import { useRef, useLayoutEffect } from "react";
 
 export default function WebGLCanvas() {
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         const canvas = canvasRef.current;
         if (canvas) {
             const gl = canvas.getContext("webgl");
@@ -11,16 +12,15 @@ export default function WebGLCanvas() {
                 console.error("WebGL not supported");
                 return;
             }
-            // Initialize WebGL context and set up drawing here
-            // ...existing code...
+            // Set canvas size to match its display size
+            canvas.width = canvas.clientWidth;
+            canvas.height = canvas.clientHeight;
+
+            drawGraphics(gl);
         }
     }, []);
 
     return (
-        <canvas
-            ref={canvasRef}
-            // style={{ width: "100%", height: "100%" }}
-            className="bg-black"
-        />
+        <canvas ref={canvasRef} width={300} height={300} className="bg-black" />
     );
 }
