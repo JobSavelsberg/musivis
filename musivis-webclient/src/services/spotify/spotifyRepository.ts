@@ -2,6 +2,7 @@ import {
     SpotifyAudioAnalysis,
     SpotifyAudioFeatures,
     SpotifyPagedResult,
+    SpotifyPlayerState,
     SpotifyTimeRanges,
     SpotifyTrack,
     SpotifyUser,
@@ -116,8 +117,16 @@ export class SpotifyRepository {
         return this.put("me/player/play", body);
     }
 
+    public static async seek(position: number): Promise<void> {
+        return this.put(`me/player/seek?position_ms=${position}`);
+    }
+
     public static async pause(): Promise<void> {
         await this.put("me/player/pause");
+    }
+
+    public static async getPlayerState(): Promise<SpotifyPlayerState> {
+        return this.get("me/player");
     }
 
     //#endregion

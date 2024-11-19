@@ -1,14 +1,29 @@
 import { useEffect, useState } from "react";
 import { Button } from "./button";
-import { Pause, Play, Loader2 } from "lucide-react"; // Import Loader icon
+import { Pause, Play, Loader2, MonitorSpeaker } from "lucide-react"; // Import Loader icon
 import { SpotifyPlayerService } from "@/services/spotify/spotifyPlayerService";
 import { useSpotifyPlayerStore } from "@/stores/spotifyPlayerStore";
 import { Seeker } from "./seeker";
 import { Skeleton } from "./skeleton";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuLabel,
+    DropdownMenuRadioGroup,
+    DropdownMenuRadioItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "./dropdown-menu";
 
 export default function SpotifyPlayer() {
-    const { isReady, isPlaying, currentTrack, position } =
-        useSpotifyPlayerStore();
+    const {
+        availableDevices,
+        currentDevice,
+        isReady,
+        isPlaying,
+        currentTrack,
+        position,
+    } = useSpotifyPlayerStore();
     // Used to make the play/pause button more responsive
     const [requestedPlayingState, setRequestedPlayingState] = useState<
         boolean | null
@@ -39,6 +54,16 @@ export default function SpotifyPlayer() {
                 setRequestedPlayingState(null);
             });
         }
+    }
+
+    function setCurrentDeviceById(deviceId: string): void {
+        const availableDevice = availableDevices.find(
+            (device) => device.id === deviceId,
+        );
+        if (!availableDevice) {
+            return;
+        }
+        SpotifyPlayerService.transferPlaybackToDevice(availableDevice);
     }
 
     return (
@@ -90,6 +115,47 @@ export default function SpotifyPlayer() {
                         )}
                     </div>
                 </div>
+
+                {availableDevices.length > 1 && (
+                    <div className="flex items-end justify-end">
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="w-10 h-10 rounded-full relative group"
+                                >
+                                    <MonitorSpeaker />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="mr-5">
+                                <DropdownMenuLabel>
+                                    Current Device
+                                </DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuRadioGroup
+                                    value={currentDevice?.id ?? ""}
+                                    onValueChange={setCurrentDeviceById}
+                                >
+                                    {availableDevices.map((device) => (
+                                        <DropdownMenuRadioItem
+                                            value={device.id}
+                                            key={device.id}
+                                            className={
+                                                device.name !==
+                                                SpotifyPlayerService.LOCAL_PLAYER_NAME
+                                                    ? "text-muted-foreground"
+                                                    : ""
+                                            }
+                                        >
+                                            {device.name}
+                                        </DropdownMenuRadioItem>
+                                    ))}
+                                </DropdownMenuRadioGroup>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </div>
+                )}
             </div>
             <div className="flex items-center text-sm gap-4 h-12">
                 {isReady ? (

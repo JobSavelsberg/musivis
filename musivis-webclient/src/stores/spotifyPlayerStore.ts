@@ -1,5 +1,7 @@
 import { PlayableTrack } from "@/services/spotify/spotifyDTOs";
+import { Device } from "@/services/spotify/spotifyPlayerService";
 import { create } from "zustand";
+
 
 interface SpotifyPlayerStore {
     isReady: boolean;
@@ -13,6 +15,13 @@ interface SpotifyPlayerStore {
 
     currentTrack: PlayableTrack | null;
     setCurrentTrack: (track: PlayableTrack) => void;
+
+    availableDevices: Device[];
+    setAvailableDevices: (availableDevices: Device[]) => void;
+    addAvailableDevice: (device: Device) => void;
+
+    currentDevice: Device | null;
+    setCurrentDevice: (device: Device) => void;
 }
 // interval
 let interval: NodeJS.Timeout | null;
@@ -45,5 +54,17 @@ export const useSpotifyPlayerStore = create<SpotifyPlayerStore>((set) => ({
     setPosition: (position: number) => set({ position }),
 
     currentTrack: null,
-    setCurrentTrack: (currentTrack: PlayableTrack) => set({ currentTrack }),
+    setCurrentTrack: (track: PlayableTrack) => set({ currentTrack: track }),
+
+    availableDevices: [],
+    setAvailableDevices: (availableDevices: Device[]) => set({ availableDevices }),
+    addAvailableDevice: (device: Device) => set((state) => {
+        if (!state.availableDevices.includes(device)) {
+            return { availableDevices: [...state.availableDevices, device] };
+        }
+        return state;
+    }),
+
+    currentDevice: null,
+    setCurrentDevice: (device: Device) => set({ currentDevice: device }),
 }));
