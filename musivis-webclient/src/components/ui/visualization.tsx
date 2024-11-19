@@ -6,12 +6,13 @@ import {
 import { SpotifyRepository } from "@/services/spotify/spotifyRepository";
 import React, { useEffect, useState } from "react";
 import { Skeleton } from "./skeleton";
+import WebGLCanvas from "./webgl-canvas";
 
 interface VisualizationProps {
     track: PlayableTrack | null;
 }
 
-const Visualization: React.FC<VisualizationProps> = ({ track }) => {
+export default function Visualization({ track }: VisualizationProps) {
     const [audioFeatures, setAudioFeatures] =
         useState<SpotifyAudioFeatures | null>(null);
     const [audioAnalysis, setAudioAnalysis] =
@@ -46,24 +47,5 @@ const Visualization: React.FC<VisualizationProps> = ({ track }) => {
         // skeleton
         return <Skeleton className="h-32" />;
     }
-    return (
-        <div>
-            {audioFeatures && (
-                <div>
-                    <p>Danceability: {audioFeatures.danceability}</p>
-                    <p>Energy: {audioFeatures.energy}</p>
-                    <p>Tempo: {audioFeatures.tempo}</p>
-                </div>
-            )}
-            {audioAnalysis && (
-                <div>
-                    <p>Key: {audioAnalysis.track.key}</p>
-                    <p>Mode: {audioAnalysis.track.mode}</p>
-                    <p>Time Signature: {audioAnalysis.track.time_signature}</p>
-                </div>
-            )}
-        </div>
-    );
-};
-
-export default Visualization;
+    return <WebGLCanvas></WebGLCanvas>;
+}
