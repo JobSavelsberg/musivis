@@ -4,7 +4,7 @@ import {
     SpotifyAudioAnalysis,
 } from "@/services/spotify/spotifyDTOs";
 import { SpotifyRepository } from "@/services/spotify/spotifyRepository";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Skeleton } from "./skeleton";
 import WebGLCanvas from "./webgl-canvas";
 
