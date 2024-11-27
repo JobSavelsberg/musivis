@@ -18,7 +18,7 @@ import {
 export default function SpotifyPlayer() {
     const {
         availableDevices,
-        currentDevice,
+        activeDevice,
         isReady,
         isPlaying,
         currentTrack,
@@ -33,7 +33,7 @@ export default function SpotifyPlayer() {
         requestedPlayingState !== null ? requestedPlayingState : isPlaying;
 
     useEffect(() => {
-        if (!SpotifyPlayerService.isScriptAdded()) {
+        if (!SpotifyPlayerService.isScriptAdded) {
             SpotifyPlayerService.addScript();
         }
     }, []);
@@ -56,7 +56,7 @@ export default function SpotifyPlayer() {
         }
     }
 
-    function setCurrentDeviceById(deviceId: string): void {
+    function setActiveDeviceById(deviceId: string): void {
         const availableDevice = availableDevices.find(
             (device) => device.id === deviceId,
         );
@@ -65,6 +65,10 @@ export default function SpotifyPlayer() {
         }
         SpotifyPlayerService.transferPlaybackToDevice(availableDevice);
     }
+
+    const lookForDevices = () => {
+        SpotifyPlayerService.updateAvailableDevices();
+    };
 
     return (
         <div>
@@ -116,46 +120,47 @@ export default function SpotifyPlayer() {
                     </div>
                 </div>
 
-                {availableDevices.length > 1 && (
-                    <div className="flex items-end justify-end">
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className="w-10 h-10 rounded-full relative group"
-                                >
-                                    <MonitorSpeaker />
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent className="mr-5">
-                                <DropdownMenuLabel>
-                                    Current Device
-                                </DropdownMenuLabel>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuRadioGroup
-                                    value={currentDevice?.id ?? ""}
-                                    onValueChange={setCurrentDeviceById}
-                                >
-                                    {availableDevices.map((device) => (
-                                        <DropdownMenuRadioItem
-                                            value={device.id}
-                                            key={device.id}
-                                            className={
-                                                device.name !==
-                                                SpotifyPlayerService.LOCAL_PLAYER_NAME
-                                                    ? "text-muted-foreground"
-                                                    : ""
-                                            }
-                                        >
-                                            {device.name}
-                                        </DropdownMenuRadioItem>
-                                    ))}
-                                </DropdownMenuRadioGroup>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    </div>
-                )}
+                <div className="flex items-end justify-end">
+                    <DropdownMenu>
+                        <DropdownMenuTrigger
+                            asChild
+                            onPointerDown={lookForDevices}
+                        >
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className="w-10 h-10 rounded-full relative group"
+                            >
+                                <MonitorSpeaker />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="mr-5">
+                            <DropdownMenuLabel>
+                                Current Device
+                            </DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuRadioGroup
+                                value={activeDevice?.id ?? ""}
+                                onValueChange={setActiveDeviceById}
+                            >
+                                {availableDevices.map((device) => (
+                                    <DropdownMenuRadioItem
+                                        value={device.id}
+                                        key={device.id}
+                                        className={
+                                            device.name !==
+                                            SpotifyPlayerService.LOCAL_PLAYER_NAME
+                                                ? "text-muted-foreground"
+                                                : ""
+                                        }
+                                    >
+                                        {device.name}
+                                    </DropdownMenuRadioItem>
+                                ))}
+                            </DropdownMenuRadioGroup>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
             </div>
             <div className="flex items-center text-sm gap-4 h-12">
                 {isReady ? (

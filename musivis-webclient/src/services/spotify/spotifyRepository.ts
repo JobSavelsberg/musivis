@@ -1,12 +1,18 @@
 import {
     SpotifyAudioAnalysis,
     SpotifyAudioFeatures,
+    SpotifyDevice,
     SpotifyPagedResult,
     SpotifyPlayerState,
     SpotifyTimeRanges,
     SpotifyTrack,
     SpotifyUser,
 } from "./spotifyDTOs";
+
+export type PlayOptions = {
+    trackuri?: string;
+    deviceId?: string;
+};
 
 export class SpotifyRepository {
     private static readonly baseUrl = "https://api.spotify.com/v1/";
@@ -112,9 +118,14 @@ export class SpotifyRepository {
         return this.put("me/player", { device_ids: [deviceId] });
     }
 
-    public static async playTrack(trackuri?: string): Promise<void> {
-        const body = trackuri ? { uris: [trackuri] } : undefined;
-        return this.put("me/player/play", body);
+    public static async playTrack(options: PlayOptions): Promise<void> {
+        const deviceIdParameter = options.deviceId
+            ? `?device_id=${options.deviceId}`
+            : "";
+        const body = options.trackuri
+            ? { uris: [options.trackuri] }
+            : undefined;
+        return this.put(`me/player/play${deviceIdParameter}`, body);
     }
 
     public static async seek(position: number): Promise<void> {
@@ -127,6 +138,14 @@ export class SpotifyRepository {
 
     public static async getPlayerState(): Promise<SpotifyPlayerState> {
         return this.get("me/player");
+    }
+
+    public static async getAvailableDevices(): Promise<SpotifyDevice[]> {
+        const devicesResponse = await this.get<{ devices: SpotifyDevice[] }>(
+            "me/player/devices",
+        );
+        if (!devicesResponse || !devicesResponse.devices) return [];
+        return devicesResponse.devices;
     }
 
     //#endregion

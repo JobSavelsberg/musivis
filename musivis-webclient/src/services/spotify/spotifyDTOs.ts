@@ -112,7 +112,7 @@ export type SpotifyDevice = {
     type: string;
     volume_percent: number;
     supports_volume: boolean;
-}
+};
 
 export type SpotifyPlayerState = {
     device: SpotifyDevice;
@@ -143,7 +143,7 @@ export type SpotifyPlayerState = {
         toggling_repeat_track: boolean;
         transferring_playback: boolean;
     };
-}
+};
 
 export type SpotifyPlayerPlay = {
     context_uri?: string;

@@ -1,6 +1,7 @@
 import { useSpotifyPlayerStore } from "@/stores/spotifyPlayerStore";
 import {
     PlayableTrack,
+    SpotifyDevice,
     SpotifyDeviceId,
     SpotifyPlayerState,
     WebPlaybackState,
@@ -19,12 +20,6 @@ type SpotifyPlayerType = {
     seek: (position: number) => Promise<void>;
 };
 
-export type Device = {
-    id: string;
-    name: string;
-};
-
-
 declare global {
     interface Window {
         Spotify: {
@@ -40,23 +35,33 @@ declare global {
 
 export class SpotifyPlayerService {
     public static readonly LOCAL_PLAYER_NAME = "Musivis";
-    private static localDevice: Device | null = null;
-    public static isTransferringPlaybackImmediately: boolean = false;
 
     private static seekPromise: Promise<void> | null = null;
 
     public static player: SpotifyPlayerType | undefined;
 
-    private static readyListener: ReadyListener;
-    private static notReadyListener: ReadyListener;
-    private static stateChangedListener: StateListener;
+    private static get localDevice(): SpotifyDevice | undefined {
+        return useSpotifyPlayerStore
+            .getState()
+            .availableDevices.find(
+                (device) => device.name === this.LOCAL_PLAYER_NAME,
+            );
+    }
 
-    private static get isPlaybackLocal() {
-        return this.localDevice && this.localDevice.name === this.LOCAL_PLAYER_NAME;
+    private static get isPlaybackLocal(): boolean {
+        return this.localDevice?.is_active || false;
+    }
+
+    public static get isScriptAdded(): boolean {
+        const addedScript = document.querySelector(
+            "script[src='https://sdk.scdn.co/spotify-player.js']",
+        );
+
+        return !!addedScript;
     }
 
     public static addScript() {
-        if (this.isScriptAdded()) {
+        if (this.isScriptAdded) {
             throw new Error("Script already added");
         }
         const script = document.createElement("script");
@@ -66,24 +71,14 @@ export class SpotifyPlayerService {
         document.body.appendChild(script);
 
         window.onSpotifyWebPlaybackSDKReady = () => {
-            this.initializeReadyPlayer();
+            this.initializePlayer();
         };
     }
 
-    public static isScriptAdded() {
-        const addedScript = document.querySelector(
-            "script[src='https://sdk.scdn.co/spotify-player.js']",
-        );
-
-        return addedScript;
-    }
-
-    private static initializeReadyPlayer() {
+    private static initializePlayer() {
         if (this.player) {
             throw new Error("Player already initialized");
         }
-
-        console.log("Initializing Spotify Player");
 
         this.player = new window.Spotify.Player({
             name: "Musivis",
@@ -94,56 +89,79 @@ export class SpotifyPlayerService {
             volume: 0.5,
         });
 
-        this.readyListener = ({ device_id }) => {
-            console.log("Connected with Device ID", device_id);
-            this.localDevice = {
-                id: device_id,
-                name: this.LOCAL_PLAYER_NAME,
-            };
-            useSpotifyPlayerStore.getState().addAvailableDevice(this.localDevice);
-            useSpotifyPlayerStore.getState().setReady(true);
-   
+        this.player.addListener("ready", ({ device_id }: SpotifyDeviceId) => {
+            this.onReady(device_id);
+        });
 
-            if(this.isTransferringPlaybackImmediately){
-                this.transferPlaybackToDevice(this.localDevice);
-            }else{
-                this.updateStateFromSpotifyServer();
-            }
-        };
-
-        this.player.addListener("ready", this.readyListener);
-
-        this.notReadyListener = ({ device_id }) => {
-            console.warn("Device ID has gone offline", device_id);
-            useSpotifyPlayerStore.getState().setReady(false);
-        };
-        this.player.addListener("not_ready", this.notReadyListener);
-
-        this.stateChangedListener = (state) => {
-            this.stateChangedHandler(state);
-           
-        };
         this.player.addListener(
-            "player_state_changed",
-            this.stateChangedListener,
+            "not_ready",
+            ({ device_id }: SpotifyDeviceId) => {
+                this.onNotReady(device_id);
+            },
         );
 
+        this.player.addListener(
+            "player_state_changed",
+            (state: WebPlaybackState) => this.stateChangedHandler(state),
+        );
+
+        // The .then will be executed before the "ready" event is fired
         this.player.connect().then((success) => {
             console.log("Connected", success);
         });
     }
 
+    private static async onReady(deviceId: string) {
+        console.log("Connected with Device ID", deviceId);
+
+        // Now ask spotify to give us the full list of devices (which should include Musivis)
+        await this.updateAvailableDevices();
+
+        // Check if only the local device is available
+        const isOnlyLocalDeviceAvailable =
+            useSpotifyPlayerStore.getState().availableDevices.length === 1 &&
+            this.localDevice;
+
+        if (isOnlyLocalDeviceAvailable) {
+            this.transferPlaybackToDevice(this.localDevice);
+        } else {
+            this.updateStateFromSpotifyServer();
+        }
+
+        // Set the player as ready so anything that depends on it can start
+        useSpotifyPlayerStore.getState().setReady(true);
+    }
+
+    private static async onNotReady(deviceId: string) {
+        console.warn("Device ID has gone offline", deviceId);
+        useSpotifyPlayerStore.getState().setReady(false);
+    }
+
     public static async play(trackURI?: string) {
+        // If no device is active, try to find "Musivis", otherwise just use the first device
+        if (!useSpotifyPlayerStore.getState().activeDevice) {
+            if (this.localDevice) {
+                await this.transferPlaybackToDevice(this.localDevice);
+            } else if (
+                useSpotifyPlayerStore.getState().availableDevices.length
+            ) {
+                await this.transferPlaybackToDevice(
+                    useSpotifyPlayerStore.getState().availableDevices[0],
+                );
+            }
+        }
+
         try {
-            await SpotifyRepository.playTrack(trackURI);
+            await SpotifyRepository.playTrack({
+                trackuri: trackURI,
+            });
             useSpotifyPlayerStore.getState().setPlaying(true);
             // If playing on the web api, we need to update the state from the server
-            if(!this.isPlaybackLocal){
+            if (!this.isPlaybackLocal) {
                 setTimeout(() => {
                     this.updateStateFromSpotifyServer();
-                }, 50);
+                }, 100);
             }
-
         } catch (e) {
             console.error(e);
         }
@@ -159,8 +177,8 @@ export class SpotifyPlayerService {
     }
 
     public static async seek(position: number) {
-        if(!this.isPlaybackLocal){
-            if(!this.seekPromise){
+        if (!this.isPlaybackLocal) {
+            if (!this.seekPromise) {
                 this.seekPromise = SpotifyRepository.seek(position).then(() => {
                     // Wait for the server to update the state
                     setTimeout(() => {
@@ -171,10 +189,10 @@ export class SpotifyPlayerService {
                 });
             }
 
-            await this.seekPromise;            
+            await this.seekPromise;
         }
 
-        if(this.player){
+        if (this.player) {
             this.player.seek(position);
         }
 
@@ -184,9 +202,7 @@ export class SpotifyPlayerService {
     private static stateChangedHandler(state: WebPlaybackState) {
         const isSpotifyPlaying = !state.paused;
         // only update if necessary
-        if (
-            useSpotifyPlayerStore.getState().isPlaying !== isSpotifyPlaying
-        ) {
+        if (useSpotifyPlayerStore.getState().isPlaying !== isSpotifyPlaying) {
             useSpotifyPlayerStore.getState().setPlaying(!state.paused);
         }
 
@@ -208,18 +224,23 @@ export class SpotifyPlayerService {
             useSpotifyPlayerStore.getState().setPosition(state.position);
         }
     }
-    
-    private static updateStateFromSpotifyServer(){
+
+    private static updateStateFromSpotifyServer() {
         SpotifyRepository.getPlayerState().then((state) => {
             // If there is nothing being played on another device, we'll just switch to the local device right away
-            if((!state || !state.is_playing) && this.localDevice){
+            if ((!state || !state.is_playing) && this.localDevice) {
                 this.transferPlaybackToDevice(this.localDevice);
             }
 
             if (state) {
-                this.checkForNewDevice(state);
+                if (!state.item) {
+                    console.warn("No track playing");
+                    return;
+                }
 
-                this.stateChangedHandler(SpotifyPlayerService.serverToLocalPlayerState(state));
+                this.stateChangedHandler(
+                    SpotifyPlayerService.serverToLocalPlayerState(state),
+                );
 
                 // Set a timeout to fetch again when the track ends
                 const trackDuration = state.item.duration_ms;
@@ -231,39 +252,43 @@ export class SpotifyPlayerService {
         });
     }
 
-    private static serverToLocalPlayerState(state: SpotifyPlayerState): WebPlaybackState {
+    private static serverToLocalPlayerState(
+        state: SpotifyPlayerState,
+    ): WebPlaybackState {
         return {
             track_window: {
                 current_track: {
                     ...state.item,
-                }
+                },
             },
             paused: !state.is_playing,
             position: state.progress_ms,
         } as unknown as WebPlaybackState;
     }
 
-    private static checkForNewDevice(state: SpotifyPlayerState) {
-        if(!state.device) return;
-        const device = {
-            id: state.device.id,
-            name: state.device.name,
+    public static async transferPlaybackToDevice(
+        device: SpotifyDevice,
+    ): Promise<void> {
+        try {
+            await SpotifyRepository.transferPlaybackToDevice(device.id);
+            // refresh the available devices
+            await this.updateAvailableDevices();
+        } catch {
+            console.error("Failed to transfer playback to device", device);
         }
-
-        if (
-            !useSpotifyPlayerStore.getState().availableDevices.some(
-                (d) => d.id === device.id,
-            )
-        ) {
-            useSpotifyPlayerStore.getState().addAvailableDevice(device);
-        }
-
-        // Since we got the state from the server, we can assume that the current device is the one we are using
-        useSpotifyPlayerStore.getState().setCurrentDevice(device);
     }
 
-    public static transferPlaybackToDevice(device: Device) {
-        SpotifyRepository.transferPlaybackToDevice(device.id);
-        useSpotifyPlayerStore.getState().setCurrentDevice(device);
+    public static async updateAvailableDevices(): Promise<void> {
+        await SpotifyRepository.getAvailableDevices().then((devices) => {
+            if (
+                !devices.some(
+                    (device) => device.name === this.LOCAL_PLAYER_NAME,
+                )
+            ) {
+                console.warn("Local player not found");
+            }
+
+            useSpotifyPlayerStore.getState().setAvailableDevices(devices);
+        });
     }
 }
