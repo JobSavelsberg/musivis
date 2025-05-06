@@ -10,7 +10,7 @@ import { SpotifyRepository } from "./services/spotify/spotifyRepository";
 import { PlayableTrack } from "./services/spotify/spotifyDTOs";
 import { useSpotifyTracksStore } from "./stores/spotifyTracksStore";
 import { SearchIcon } from "lucide-react";
-import { Route, Routes } from "react-router-dom";
+import { Link, Route, Routes } from "react-router-dom";
 
 export type User = {
     display_name: string;
@@ -50,7 +50,28 @@ function App() {
     return (
         <div className="flex flex-col h-screen px-4 pt-4 pb-2">
             <header className="grid grid-cols-3 items-center">
-                <h1 className="font-bold text-2xl grow">Musivis</h1>
+                <div className="grow flex items-center gap-4">
+                    <a
+                        href="https://open.spotify.com"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center"
+                    >
+                        <img
+                            src="/src/assets/spotify/spotify-icon-black.svg"
+                            alt="Spotify"
+                            className="h-6 dark:hidden"
+                        />
+                        <img
+                            src="/src/assets/spotify/spotify-icon-white.svg"
+                            alt="Spotify"
+                            className="h-6 hidden dark:block"
+                        />
+                    </a>
+                    <Link to="/" className="font-bold text-2xl">
+                        Musivis
+                    </Link>
+                </div>
                 <div className="z-10">
                     {isLoggedIn && (
                         <div className="relative">
