@@ -11,6 +11,8 @@ import { PlayableTrack } from "./services/spotify/spotifyDTOs";
 import { useSpotifyTracksStore } from "./stores/spotifyTracksStore";
 import { SearchIcon } from "lucide-react";
 import { Link, Route, Routes } from "react-router-dom";
+import SpotifyBlackIcon from "./assets/spotify/spotify-icon-black.svg";
+import SpotifyWhiteIcon from "./assets/spotify/spotify-icon-white.svg";
 
 export type User = {
     display_name: string;
@@ -58,12 +60,12 @@ function App() {
                         className="flex items-center"
                     >
                         <img
-                            src="/src/assets/spotify/spotify-icon-black.svg"
+                            src={SpotifyBlackIcon}
                             alt="Spotify"
                             className="h-6 dark:hidden"
                         />
                         <img
-                            src="/src/assets/spotify/spotify-icon-white.svg"
+                            src={SpotifyWhiteIcon}
                             alt="Spotify"
                             className="h-6 hidden dark:block"
                         />
