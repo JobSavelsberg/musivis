@@ -12,7 +12,10 @@ namespace Musivis.API
 
             builder.Services.AddCors(options =>
             {
-                options.AddDefaultPolicy(policy => policy.WithOrigins("https://musivis.vercel.app"));
+                options.AddDefaultPolicy(policy => policy.WithOrigins(
+                    "https://musivis.vercel.app", 
+                    "https://musivis.nl"
+                ));
             });
 
             builder.Services.AddControllers();
