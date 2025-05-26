@@ -5,6 +5,8 @@ VisualStudioVersion = 17.10.35122.118
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Musivis.API", "musivis-api\Musivis.API.csproj", "{96419E33-E37B-4B18-9A80-6762F6BB65FD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Musivis.API.Tests", "Musivis.API.Tests\Musivis.API.Tests.csproj", "{57401BE7-DC2D-4298-A7B9-91ADCBF192DB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{96419E33-E37B-4B18-9A80-6762F6BB65FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{96419E33-E37B-4B18-9A80-6762F6BB65FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{96419E33-E37B-4B18-9A80-6762F6BB65FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{57401BE7-DC2D-4298-A7B9-91ADCBF192DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57401BE7-DC2D-4298-A7B9-91ADCBF192DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57401BE7-DC2D-4298-A7B9-91ADCBF192DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{57401BE7-DC2D-4298-A7B9-91ADCBF192DB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
