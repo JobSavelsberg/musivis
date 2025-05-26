@@ -14,7 +14,7 @@ namespace Musivis.API
             {
                 options.AddDefaultPolicy(policy => policy.WithOrigins(
                     "https://musivis.vercel.app", 
-                    "https://musivis.nl"
+                    "https://www.musivis.nl"
                 ).AllowAnyHeader().AllowAnyMethod());
             });
 
