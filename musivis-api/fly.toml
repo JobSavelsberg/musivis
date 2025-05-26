@@ -7,7 +7,6 @@ app = 'musivis-api'
 primary_region = 'ams'
 
 [build]
-  builder = "dockerfile"
 
 [http_service]
   internal_port = 8080
