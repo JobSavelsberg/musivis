@@ -1,7 +1,7 @@
 import { User } from "@/app";
 import { SpotifyRepository } from "@/services/spotify/spotifyRepository";
 import { SpotifyAuthorization } from "@/services/spotify/spotifyAuthorization";
-import { createContext, useEffect, useState } from "react";
+import { createContext, useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export interface IAuthContext {
@@ -40,14 +40,14 @@ const AuthProvider = (props: IAuthProviderProps) => {
         SpotifyAuthorization.authorize();
     };
 
-    const logout: IAuthContext["logout"] = () => {
+    const logout: IAuthContext["logout"] = useCallback(() => {
         setIsLoggedIn(false);
         setUser(defaultUser);
         SpotifyAuthorization.logOut();
-    };
+    }, []);
 
     // Can be called when everything in SpotifyAuthorization is set (token is retrieved and in local storage)
-    const login: IAuthContext["login"] = () => {
+    const login: IAuthContext["login"] = useCallback(() => {
         setIsLoggedIn(true);
         SpotifyRepository.getMe()
             .then((user) => {
@@ -57,7 +57,7 @@ const AuthProvider = (props: IAuthProviderProps) => {
                 // apparently the token is invalid, so we log out
                 logout();
             });
-    };
+    }, [logout]);
 
     useEffect(() => {
         const isAlreadyLoggedIn = SpotifyAuthorization.isLoggedIn();
@@ -68,7 +68,7 @@ const AuthProvider = (props: IAuthProviderProps) => {
         } else if (!isLoggingIn) {
             navigate("/login");
         }
-    }, []);
+    }, [login, navigate]);
 
     return (
         <AuthContext.Provider

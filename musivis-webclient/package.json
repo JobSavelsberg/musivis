@@ -10,7 +10,8 @@
         "lint": "eslint .",
         "preview": "vite preview",
         "test": "vitest",
-        "test:ui": "vitest --ui"
+        "test:ui": "vitest --ui",
+        "test:ci": "vitest run --coverage"
     },
     "dependencies": {
         "@radix-ui/react-avatar": "^1.1.0",
