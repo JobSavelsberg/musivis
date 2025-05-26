@@ -63,7 +63,9 @@ const localStorageMock = (() => {
       store = {};
     },
     key: (index: number) => Object.keys(store)[index] || null,
-    length: Object.keys(store).length,
+    get length() {
+      return Object.keys(store).length;
+    },
   };
 })();
 
