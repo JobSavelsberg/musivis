@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 import { vi } from 'vitest';
 
 // Mock fetch
-global.fetch = vi.fn((input: RequestInfo | URL, init?: RequestInit) => {
+global.fetch = vi.fn((input: RequestInfo | URL, _init?: RequestInit) => {
   // Log the URL being fetched for debugging
   // console.log(`Mock fetch called for URL: ${input.toString()}`);
 

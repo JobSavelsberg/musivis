@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import { vi } from 'vitest'; // Import vi
 import App, { User } from './app'; // Import User type
 import { BrowserRouter } from 'react-router-dom';
 import { AuthContext, IAuthContext } from './components/auth-provider'; // Use IAuthContext
