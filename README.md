@@ -1,7 +1,7 @@
 # Musivis
 
 <div align="center">
-  <img src="./musivis-webclient/src/assets/spotify/musivis-icon.svg" alt="Musivis Logo" width="120" height="120">
+  <img src="./musivis-webclient/src/assets/musivis-icon-animated.svg" alt="Musivis Logo" width="120" height="120">
 </div>
 
 ## Project Overview

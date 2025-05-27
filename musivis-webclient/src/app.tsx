@@ -14,7 +14,7 @@ import { SearchIcon } from "lucide-react";
 import { Link, Route, Routes } from "react-router-dom";
 import SpotifyBlackIcon from "./assets/spotify/spotify-icon-black.svg";
 import SpotifyWhiteIcon from "./assets/spotify/spotify-icon-white.svg";
-import MusivisIcon from "./assets/spotify/musivis-icon.svg";
+import MusivisIcon from "./assets/musivis-icon-animated.svg";
 
 export type User = {
     display_name: string;
