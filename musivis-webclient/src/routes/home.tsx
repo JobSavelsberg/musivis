@@ -51,10 +51,9 @@ function Home() {
                 ></TrackBrowser>
             </div>
 
-            <div>
+            <div className="flex-grow flex justify-center items-center relative">
                 <Visualization track={currentTrack}></Visualization>
             </div>
-            <div className="flex-grow"></div>
             <SpotifyPlayer></SpotifyPlayer>
         </div>
     );

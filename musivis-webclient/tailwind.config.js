@@ -4,6 +4,20 @@ export default {
     content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
     theme: {
         extend: {
+            animation: {
+                "fade-in": "fadeIn 1.5s ease-in-out forwards",
+                "fade-pulse": "fadeIn 1.5s ease-in-out forwards, pulse 2s ease-in-out infinite 1.5s",
+            },
+            keyframes: {
+                fadeIn: {
+                    "0%": { opacity: 0 },
+                    "100%": { opacity: 1 },
+                },
+                pulse: {
+                    "0%, 100%": { opacity: 1 },
+                    "50%": { opacity: 0.85 },
+                },
+            },
             borderRadius: {
                 lg: "var(--radius)",
                 md: "calc(var(--radius) - 2px)",

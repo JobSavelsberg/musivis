@@ -1,0 +1,58 @@
+<svg viewBox="30 190 120 120" width="120" height="120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="gradient" x1="17.055" y1="309.696" x2="416.37" y2="195.609"
+      gradientUnits="userSpaceOnUse"
+      gradientTransform="matrix(0.26773608,0,0,1.09712,31.030131,-25.495692)">
+      <stop offset="0%" stop-color="#ff00aa" />
+      <stop offset="25%" stop-color="#ff9900" />
+      <stop offset="50%" stop-color="#eeee00" />
+      <stop offset="75%" stop-color="#00ff88" />
+      <stop offset="100%" stop-color="#00ccff" />
+    </linearGradient>
+    
+    <style>
+      .draw path {
+        animation: draw-and-erase-mv 2s cubic-bezier(0.3, 0, 0.5, 1) infinite;
+        /* animation: draw-and-erase 1.4s linear infinite; */
+      }
+
+      @keyframes draw-and-erase-mv {
+        0% {
+          stroke-dasharray: 280;
+          stroke-dashoffset: 350;
+        }
+        50% {
+          stroke-dasharray: 280;
+          stroke-dashoffset: 0;
+        }
+        100% {
+          stroke-dasharray: 280;
+          stroke-dashoffset: -210;
+        }
+      }
+
+      @keyframes draw-and-erase {
+
+        0% {
+          stroke-dasharray: 200;
+          stroke-dashoffset: 0;
+        }
+        100% {
+          stroke-dasharray: 200;
+          stroke-dashoffset: -400;
+        }
+      }
+
+    </style>
+  </defs>
+
+  <g class="draw">
+    <path
+      d="M42.2516 289.344c14.64-92.68 9.244-98.549 26.669-41.099 7.935 25.208 9.678 25.634 16.162 0.648 13.988-54.182 10.9-50.718 23.117 10.406 10.157 49 10.354 36.845 26.66-40"
+      stroke="url(#gradient)"
+      stroke-width="19"
+      fill="none"
+      stroke-linecap="round"
+    />
+  </g>
+</svg>
