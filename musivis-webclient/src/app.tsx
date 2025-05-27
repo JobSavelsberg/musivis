@@ -6,6 +6,7 @@ import Profile from "./components/ui/profile";
 import { AuthContext } from "./components/auth-provider";
 import { Input } from "./components/ui/input";
 import { useDebounce } from "./hooks/useDebounce";
+import { useWindowSize } from "./hooks/useWindowSize";
 import { SpotifyRepository } from "./services/spotify/spotifyRepository";
 import { PlayableTrack } from "./services/spotify/spotifyDTOs";
 import { useSpotifyTracksStore } from "./stores/spotifyTracksStore";
@@ -31,6 +32,7 @@ function App() {
     const [search, setSearch] = useState("");
     const { setTracks, setIsSearching } = useSpotifyTracksStore();
     const debouncedSearch = useDebounce(search, 150);
+    const { width } = useWindowSize();
 
     useEffect(() => {
         const backendUrl = import.meta.env.VITE_MUSIVIS_BACKEND_URL as string;
@@ -52,42 +54,54 @@ function App() {
 
     return (
         <div className="flex flex-col h-screen px-4 pt-4 pb-2">
-            <header className="grid grid-cols-3 items-center">
-                <div className="grow flex items-center gap-4">
-                    <a
-                        href="https://open.spotify.com"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center"
-                    >
-                        <img
-                            src={SpotifyBlackIcon}
-                            alt="Spotify"
-                            className="h-6 dark:hidden"
-                        />
-                        <img
-                            src={SpotifyWhiteIcon}
-                            alt="Spotify"
-                            className="h-6 hidden dark:block"
-                        />
-                    </a>
+            <header className="flex items-center gap-4">
+                {/* Left side container */}
+                <div className="flex items-center gap-4 justify-start flex-shrink-0">
+                    {/* Spotify Logo - fixed size, won't shrink */}
+                    <div className="flex-shrink-0">
+                        <a
+                            href="https://open.spotify.com"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center"
+                        >
+                            <img
+                                src={SpotifyBlackIcon}
+                                alt="Spotify"
+                                className="h-6 dark:hidden"
+                            />
+                            <img
+                                src={SpotifyWhiteIcon}
+                                alt="Spotify"
+                                className="h-6 hidden dark:block"
+                            />
+                        </a>
+                    </div>
+                    {/* Musivis Logo - Musivis text can hide on small screens */}
                     <Link
                         to="/"
-                        className="font-bold text-2xl flex items-center gap-3"
+                        className="flex-shrink-0 font-bold text-2xl flex items-center gap-3"
                     >
                         <img
                             src={MusivisIcon}
                             alt="Musivis Logo"
-                            className="h-6"
+                            className="h-6 flex-shrink-0"
                         />
-                        Musivis
+                        <span className="hidden md:inline">Musivis</span>
                     </Link>
                 </div>
-                <div className="z-10">
+
+                {/* Search Bar - centered in the middle column, show different versions based on screen size*/}
+                <div className="z-10 w-full flex-grow flex justify-center">
                     {isLoggedIn && (
-                        <div className="relative">
+                        <div className="relative w-full max-w-xl mx-auto">
                             <Input
-                                placeholder="What music do you want to visualize?"
+                                placeholder={
+                                    width < 450
+                                        ? "Search music..."
+                                        : "What music do you want to visualize?"
+                                }
+                                className="pl-10 w-full"
                                 onChange={(event) =>
                                     setSearch(event.target.value)
                                 }
@@ -96,7 +110,6 @@ function App() {
                                 onBlur={() =>
                                     setTimeout(() => setIsSearching(false), 100)
                                 }
-                                className="pl-10"
                             />
                             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                                 <SearchIcon className="w-5 h-5 text-gray-400" />
@@ -104,7 +117,13 @@ function App() {
                         </div>
                     )}
                 </div>
-                <div className="justify-self-end">
+
+                {/* Invisible spacer div to balance the layout */}
+                <div className="hidden lg:inline invisible w-48"></div>
+
+                {/* Right side container */}
+                <div className="flex justify-end">
+                    {/* Profile - fixed position on the right */}
                     <Profile user={user} onLogOut={logout} />
                 </div>
             </header>
