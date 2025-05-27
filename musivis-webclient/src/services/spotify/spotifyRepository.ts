@@ -33,7 +33,13 @@ export class SpotifyRepository {
                 window.location.href = "/login";
                 break;
             case 403:
+                throw new Error(
+                    "Forbidden: You do not have permission to access this resource.",
+                );
             case 404:
+                throw new Error(
+                    "Not Found: The requested resource could not be found.",
+                );
             case 500: {
                 let errorMessage: string = `${response.status} ${response.statusText}`;
                 try {
