@@ -14,9 +14,21 @@ export default function TrackCard({
     onClick?: () => void;
     tabIndex?: number;
 }) {
-    const coverUrl = track.album.images[0].url;
-    const title = track.name;
-    const artists = track.artists.map((artist) => artist.name).join(", ");
+    // Add defensive check for album images with fallback
+    const coverUrl =
+        track.album?.images &&
+        track.album.images.length > 0 &&
+        track.album.images[0]?.url
+            ? track.album.images[0].url
+            : "https://placehold.co/400x400/333/white?text=No+Image";
+
+    const title = track.name || "Unknown Title";
+    const artists =
+        track.artists?.length > 0
+            ? track.artists
+                  .map((artist) => artist.name || "Unknown Artist")
+                  .join(", ")
+            : "Unknown Artist";
 
     return (
         <Card
