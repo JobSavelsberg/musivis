@@ -13,6 +13,7 @@ import { SearchIcon } from "lucide-react";
 import { Link, Route, Routes } from "react-router-dom";
 import SpotifyBlackIcon from "./assets/spotify/spotify-icon-black.svg";
 import SpotifyWhiteIcon from "./assets/spotify/spotify-icon-white.svg";
+import MusivisIcon from "./assets/spotify/musivis-icon.svg";
 
 export type User = {
     display_name: string;
@@ -70,7 +71,15 @@ function App() {
                             className="h-6 hidden dark:block"
                         />
                     </a>
-                    <Link to="/" className="font-bold text-2xl">
+                    <Link
+                        to="/"
+                        className="font-bold text-2xl flex items-center gap-3"
+                    >
+                        <img
+                            src={MusivisIcon}
+                            alt="Musivis Logo"
+                            className="h-6"
+                        />
                         Musivis
                     </Link>
                 </div>

@@ -17,7 +17,7 @@ function Home() {
         SpotifyRepository.getTopTracks().then((tracks) =>
             setTracks(tracks.items as PlayableTrack[]),
         );
-    }, []);
+    }, [setTracks]);
 
     const onTrackClicked = (track: SpotifyTrack) => {
         SpotifyPlayerService.play(track.uri);
