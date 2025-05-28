@@ -1,4 +1,4 @@
-import { drawGraphics } from "@/libs/graphics/graphics";
+import { drawGraphics } from "@/lib/graphics/graphics";
 import { useRef, useLayoutEffect } from "react";
 
 export default function WebGLCanvas() {

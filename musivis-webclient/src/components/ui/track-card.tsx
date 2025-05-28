@@ -1,6 +1,6 @@
 import { SpotifyTrack } from "@/services/spotify/spotifyDTOs";
 import { Card, CardContent } from "./card";
-import { cn } from "@/libs/utils";
+import { cn } from "@/lib/utils";
 import { Play } from "lucide-react";
 
 export default function TrackCard({

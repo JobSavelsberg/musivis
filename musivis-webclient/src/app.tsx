@@ -15,6 +15,7 @@ import { Link, Route, Routes } from "react-router-dom";
 import SpotifyBlackIcon from "./assets/spotify/spotify-icon-black.svg";
 import SpotifyWhiteIcon from "./assets/spotify/spotify-icon-white.svg";
 import MusivisIcon from "./assets/musivis-icon-animated.svg";
+import { initializeFirebaseAppIfNeeded } from "./services/firebase";
 
 export type User = {
     display_name: string;
@@ -42,6 +43,10 @@ function App() {
                 console.log("Backend status:", responseText),
             )
             .catch((error) => console.warn("Error fetching data:", error));
+    }, []);
+
+    useEffect(() => {
+        initializeFirebaseAppIfNeeded();
     }, []);
 
     useEffect(() => {
